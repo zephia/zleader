@@ -1,0 +1,15 @@
+{
+    "name": "zephia/zleader",
+    "description": "Lead router and dasboard",
+    "authors": [
+        {
+            "name": "Cristian Jimenez",
+            "email": "cristian@zephia.com.ar"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "nayjest/grids": "^1.2",
+        "laravelcollective/html": "^5.2"
+    }
+}
