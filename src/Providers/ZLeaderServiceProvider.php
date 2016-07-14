@@ -3,6 +3,7 @@
 namespace Zephia\ZLeader\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\Router;
 
 class ZLeaderServiceProvider extends ServiceProvider
 {
@@ -15,8 +16,11 @@ class ZLeaderServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadViewsFrom(__DIR__.'/../../resources/views', $this->packageName);
+        $this->setupRoutes($this->app->router);
+
         $this->publishes([
-            __DIR__.'/../../config/zleader.php' => config_path('zleader.php')
+            __DIR__.'/../../config/zleader.php' => config_path('zleader.php'),
         ], 'config');
 
         $this->publishes([
@@ -24,12 +28,21 @@ class ZLeaderServiceProvider extends ServiceProvider
         ], 'views');
 
         $this->publishes([
-            __DIR__.'/../../resources/assets' => public_path('vendor/' . $this->packageName . '/assets'),
+            __DIR__.'/../../public/zl.js' => public_path('zl.js'),
         ], 'public');
 
         $this->publishes([
+            __DIR__.'/../../resources/assets' => public_path('vendor/' . $this->packageName . '/assets'),
             __DIR__.'/../../vendor/cartalyst/data-grid/public/js' => public_path('vendor/' . $this->packageName . '/cartalyst/data-grid/js'),
-        ], 'public');
+            __DIR__.'/../../vendor/almasaeed2010/adminlte/dist' => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/dist'),
+            __DIR__.'/../../vendor/almasaeed2010/adminlte/plugins' => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/plugins'),
+            __DIR__.'/../../vendor/almasaeed2010/adminlte/bootstrap' => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/bootstrap'),
+            __DIR__.'/../../vendor/jan-dolata/crude-crud/src/public' => public_path('vendor/jan-dolata/crude-crud'),
+        ], 'assets');
+
+        $this->publishes([
+            __DIR__.'/../../database/migrations' => database_path('migrations'),
+        ], 'migrations');        
     }
 
     /**
@@ -42,13 +55,18 @@ class ZLeaderServiceProvider extends ServiceProvider
         require_once __DIR__ . '/../../vendor/autoload.php';
 
         $this->mergeConfigFrom(__DIR__.'/../../config/zleader.php', $this->packageName);
-        $this->loadViewsFrom(__DIR__.'/../../resources/views', $this->packageName);
+        $this->mergeConfigFrom(__DIR__.'/../../config/crude.php', 'crude');
+        $this->mergeConfigFrom(__DIR__.'/../../config/sluggable.php', 'sluggable');
 
         $this->registerProviders();
-        $this->registerAliases();;
+        $this->registerAliases();
+    }
 
-        include __DIR__.'/../Http/routes.php';
-        $this->app->make(\Zephia\ZLeader\Http\Controllers\ZLeaderController::class);
+    public function setupRoutes(Router $router)
+    {
+        $router->group(['namespace' => 'Zephia\ZLeader\Http\Controllers'], function($router) {
+            include __DIR__.'/../Http/routes.php';
+        });
     }
 
     public function registerProviders()

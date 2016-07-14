@@ -13,6 +13,8 @@
 
 {{-- Inline scripts --}}
 @section('scripts')
+<script src="{{ URL::asset('vendor/ZLeader/cartalyst/data-grid/js/underscore.js') }}"></script>
+<script src="{{ URL::asset('vendor/ZLeader/cartalyst/data-grid/js/data-grid.js') }}"></script>
 <script src="{{ URL::asset('vendor/ZLeader/assets/js/moment.js') }}"></script>
 <script src="{{ URL::asset('vendor/ZLeader/assets/js/bootstrap-datetimepicker.js') }}"></script>
 

@@ -2,10 +2,9 @@
 
 namespace Zephia\ZLeader\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Zephia\ZLeader\Http\Models\Lead;
+use Illuminate\Routing\Controller;
  
-class ZLeaderController extends Controller
+class LeadController extends Controller
 {
     public function index()
     {

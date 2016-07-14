@@ -1,6 +1,14 @@
 <?php
 Route::group(['prefix' => 'zleader'], function( ){
-	Route::get('/', 'Zephia\ZLeader\Http\Controllers\ZLeaderController@index');
-	Route::get('/datagrid/source', 'Zephia\ZLeader\Http\Controllers\DataGridController@source');
+    Route::get('/', 'DashboardController@index');
+    Route::get('/leads', 'LeadController@index');
+    Route::get('/datagrid/source', 'DataGridController@source');
+    Route::get('/forms', 'FormController@index');
+    Route::get('/config', 'ConfigController@index');
+    Route::get('/companies', 'CompanyController@index');
+    Route::get('/areas', 'AreaController@index');
 });
-	
+
+Route::group(['prefix' => 'zleader/api'], function( ){
+    Route::post('/lead/form/{form_slug}', 'Api\LeadController@store');
+});

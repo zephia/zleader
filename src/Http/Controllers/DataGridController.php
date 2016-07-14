@@ -2,8 +2,8 @@
 
 namespace Zephia\ZLeader\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Zephia\ZLeader\Http\Models\Lead ;
+use Illuminate\Routing\Controller;
+use DataGrid;
  
 class DataGridController extends Controller
 {
@@ -11,7 +11,7 @@ class DataGridController extends Controller
     {
         $data = \Lead::all();
 
-        return \DataGrid::make($data, array(
+        return DataGrid::make($data, array(
             'id',
             'name',
             'email',
