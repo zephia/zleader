@@ -4,22 +4,27 @@ namespace Zephia\ZLeader\Http\Controllers\Api;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Exception;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Zephia\ZLeader\Model\Form;
+use Zephia\ZLeader\Model\Lead;
+use Zephia\ZLeader\Model\LeadValue;
  
 class LeadController extends Controller
 {
     public function store(Request $request, $form_slug)
     {
 
-        $forms = new \Form;
+        $forms = new Form;
 
         $form = $forms->whereSlug($form_slug)->firstOrFail();
 
         DB::beginTransaction();
 
         try {
-        	$lead = new \Lead;
+        	$lead = new Lead;
 
             $lead->form_id = $form->id;
 
@@ -39,7 +44,7 @@ class LeadController extends Controller
 
             if($request->utm_content)
                 $lead->utm_content = $request->utm_content;
-            
+
             if($request->utm_campaign)
                 $lead->utm_campaign = $request->utm_campaign;
 
@@ -52,7 +57,7 @@ class LeadController extends Controller
                 $prefix = array_shift($result_array);
                 $key = implode('_', $result_array);
                 if($prefix == 'zlfield') {
-                    $leadValue = new \LeadValue;
+                    $leadValue = new LeadValue;
                     $leadValue->lead_id = $lead->id;
                     $leadValue->key = $key;
                     $leadValue->value = $value;
@@ -60,7 +65,7 @@ class LeadController extends Controller
                 }
             }
         }
-        catch(\Exception $e) {
+        catch(Exception $e) {
             DB::rollback();
             throw $e;
         }
@@ -68,5 +73,42 @@ class LeadController extends Controller
         DB::commit();
 
         return Redirect::to($form->feedback_url);
+    }
+
+    public function releaseNotificationQueue(Request $request)
+    {
+        $notification_queue = Lead::where('notify','=',1)->get();
+
+        foreach ($notification_queue as $lead) {
+            if(!empty($lead->form->notification_emails)) {
+                $emails = explode(',', $lead->form->notification_emails);
+
+                if(is_array($emails)) {
+                    // Internal e-mail notification
+                    Mail::send('ZLeader::lead.email-internal-notification', ['lead' => $lead], function ($message) use ($emails, $lead) {
+                        $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
+                        $message->subject($lead->form->notification_subject);
+                        //$message->replyTo($address);
+                        foreach($emails as $email) {
+                            $message->to($email);
+                        }
+                    });
+
+                    //dd($lead->email);
+
+                    // User e-mail notification
+                    /*Mail::send('ZLeader::lead.email-user-notification', ['emails' => $emails], function ($message) use ($emails, $lead) {
+                        $message->from(config('notification_sender_email_address'), $lead->form->area->company->name);
+                        $message->subject($lead->form->notification_subject);
+                        foreach($emails as $email) {
+                            $message->to($email);
+                        }
+                    });*/
+                }
+            }
+
+            $lead->notify = 0;
+            $lead->save();
+        }
     }
 }

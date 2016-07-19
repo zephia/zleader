@@ -13,9 +13,6 @@
     for (i in forms) {
         var cn = forms[i].className;
         if(cn && cn.match(new RegExp("(^|\\s)zlform(\\s|$)"))) {
-            console.log(forms[i]);
-            console.log(getParameterByName('utm_sources'));
-
             for (j in utm_fields) {
                 var utm_value = getParameterByName(utm_fields[j]);
                 if(utm_value != null) {
@@ -28,9 +25,4 @@
             }
         }
     }
-
-    /*console.log();
-    var f = document.getElementById("<ID_OF_THE_DIV>");
-    var content = document.createTextNode("<YOUR_CONTENT>");
-    theDiv.appendChild(content);*/
 })();

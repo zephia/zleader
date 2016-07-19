@@ -3,7 +3,7 @@
 namespace Zephia\ZLeader\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Zephia\ZLeader\Engine\Crude\AreaCRUD;
+use Zephia\ZLeader\Crude\AreaCRUD;
  
 class AreaController extends Controller
 {

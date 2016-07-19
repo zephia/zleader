@@ -11,16 +11,13 @@
     "minimum-stability": "stable",
     "require": {
         "cartalyst/data-grid": "3.0.*",
-        "dompdf/dompdf": "dev-develop",
+        "dompdf/dompdf": "*",
         "kris/laravel-form-builder": "1.*",
         "almasaeed2010/adminlte": "~2.0",
         "cviebrock/eloquent-sluggable": "^4.0.2",
         "jan-dolata/crude-crud": "^1.0"
     },
     "autoload": {
-        "classmap": [
-            "src/Model"
-        ],
         "psr-4": {
             "Zephia\\ZLeader\\": "src"
         }

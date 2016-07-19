@@ -3,7 +3,7 @@
 namespace Zephia\ZLeader\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Zephia\ZLeader\Engine\Crude\CompanyCRUD;
+use Zephia\ZLeader\Crude\CompanyCRUD;
 
 class CompanyController extends Controller
 {

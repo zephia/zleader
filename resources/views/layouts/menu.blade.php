@@ -7,6 +7,7 @@
   <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\FormController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\FormController@index') }}"><i class="fa fa-list-alt"></i> <span>Formularios</span></a></li>
   <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\CompanyController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\CompanyController@index') }}"><i class="fa fa-building"></i> <span>Empresas</span></a></li>
   <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\AreaController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\AreaController@index') }}"><i class="fa fa-sitemap"></i> <span>Areas</span></a></li>
+  <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\FieldController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\FieldController@index') }}"><i class="fa fa-list-alt"></i> <span>Campos</span></a></li>
   <!--<li class="treeview">
     <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
       <span class="pull-right-container">

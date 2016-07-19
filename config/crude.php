@@ -12,7 +12,7 @@ return [
      * Namespace of crude class
      * @var string
      */
-    'namespace' => '\Zephia\ZLeader\Engine\Crude\\',
+    'namespace' => '\Zephia\ZLeader\Crude\\',
 
     /**
      * Routes middleware

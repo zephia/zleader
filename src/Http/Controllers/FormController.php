@@ -3,7 +3,7 @@
 namespace Zephia\ZLeader\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Zephia\ZLeader\Engine\Crude\FormCRUD;
+use Zephia\ZLeader\Crude\FormCRUD;
  
 class FormController extends Controller
 {

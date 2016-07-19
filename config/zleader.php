@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'notification_sender_email_address' => 'webmaster@microwebsites.com.ar',
 
     /*
     |--------------------------------------------------------------------------
@@ -31,5 +32,18 @@ return [
     'aliases' => [
         'DataGrid' => Cartalyst\DataGrid\Laravel\Facades\DataGrid::class,
         'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Class Integrations
+    |--------------------------------------------------------------------------
+    |
+    | This array of class integrations will be registered when this application
+    | is started.
+    |
+    */
+    'input_integrations' => [
+        'FacebookForm' => Zephia\ZLeader\Integrations\Input\FacebookForm::class,
     ],
 ];

@@ -1,10 +1,10 @@
 @extends('ZLeader::layouts.master')
 
 @section('title')
-Empresas - @parent
+Campos - @parent
 @stop
 
-@section('page_header', 'Empresas')
+@section('page_header', 'Campos')
 
 @section('content')
 @include('CrudeCRUD::start')

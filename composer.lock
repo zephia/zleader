@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9083516877e76c2516f8190827adaabe",
-    "content-hash": "9395ca4bd93e98db579e83a0ed5d125b",
+    "hash": "b78146f4f1e9e268777cea1c6c290951",
+    "content-hash": "808badb3df2471d71b4a8267b6788edd",
     "packages": [
         {
             "name": "almasaeed2010/adminlte",
@@ -198,16 +198,16 @@
         },
         {
             "name": "cviebrock/eloquent-sluggable",
-            "version": "4.0.2",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cviebrock/eloquent-sluggable.git",
-                "reference": "91cc258bb91b34e2d12eae2827c11f1529f881bd"
+                "reference": "506525bd2d4092f2bda933b65eb42c6ff4818e15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cviebrock/eloquent-sluggable/zipball/91cc258bb91b34e2d12eae2827c11f1529f881bd",
-                "reference": "91cc258bb91b34e2d12eae2827c11f1529f881bd",
+                "url": "https://api.github.com/repos/cviebrock/eloquent-sluggable/zipball/506525bd2d4092f2bda933b65eb42c6ff4818e15",
+                "reference": "506525bd2d4092f2bda933b65eb42c6ff4818e15",
                 "shasum": ""
             },
             "require": {
@@ -245,7 +245,7 @@
                 "laravel",
                 "slug"
             ],
-            "time": "2016-06-17 22:05:30"
+            "time": "2016-07-15 16:05:39"
         },
         {
             "name": "doctrine/inflector",
@@ -316,16 +316,16 @@
         },
         {
             "name": "dompdf/dompdf",
-            "version": "dev-develop",
+            "version": "v0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "5394e3d0dc827fb74d1387c9ae993f5de3999140"
+                "reference": "5c98652b1a5beb7e3cc8ec35419b2828dd63ab14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/5394e3d0dc827fb74d1387c9ae993f5de3999140",
-                "reference": "5394e3d0dc827fb74d1387c9ae993f5de3999140",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/5c98652b1a5beb7e3cc8ec35419b2828dd63ab14",
+                "reference": "5c98652b1a5beb7e3cc8ec35419b2828dd63ab14",
                 "shasum": ""
             },
             "require": {
@@ -373,7 +373,7 @@
             ],
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
-            "time": "2016-07-06 20:24:55"
+            "time": "2016-05-11 00:36:29"
         },
         {
             "name": "illuminate/config",
@@ -1054,16 +1054,16 @@
         },
         {
             "name": "jan-dolata/crude-crud",
-            "version": "v1.0.75",
+            "version": "v1.0.79",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jan-dolata/crude-crud.git",
-                "reference": "6b47e2d86bf7abe4ee497fe8640d5b25aed7c28d"
+                "reference": "11aed82d77bbba7f9fa6f28c5de50acbd4fdb5aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jan-dolata/crude-crud/zipball/6b47e2d86bf7abe4ee497fe8640d5b25aed7c28d",
-                "reference": "6b47e2d86bf7abe4ee497fe8640d5b25aed7c28d",
+                "url": "https://api.github.com/repos/jan-dolata/crude-crud/zipball/11aed82d77bbba7f9fa6f28c5de50acbd4fdb5aa",
+                "reference": "11aed82d77bbba7f9fa6f28c5de50acbd4fdb5aa",
                 "shasum": ""
             },
             "require": {
@@ -1103,7 +1103,7 @@
                 "crude-crud",
                 "jan-dolata"
             ],
-            "time": "2016-07-13 19:40:04"
+            "time": "2016-07-15 09:22:18"
         },
         {
             "name": "kris/laravel-form-builder",
@@ -2033,9 +2033,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "dompdf/dompdf": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

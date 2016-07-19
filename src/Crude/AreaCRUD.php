@@ -1,6 +1,6 @@
 <?php
 
-namespace Zephia\ZLeader\Engine\Crude;
+namespace Zephia\ZLeader\Crude;
 
 use Crude;
 use CrudeListInterface;
@@ -10,6 +10,8 @@ use CrudeDeleteInterface;
 use CrudeWithValidationInterface;
 use CrudeFromModelTrait;
 use CrudeWithValidationTrait;
+use Zephia\ZLeader\Model\Area;
+use Zephia\ZLeader\Model\Company;
 
 class AreaCRUD extends Crude implements 
     CrudeListInterface, 
@@ -23,7 +25,7 @@ class AreaCRUD extends Crude implements
 
     public function __construct()
     {
-        $this->setModel(new \Area);
+        $this->setModel(new Area);
 
         $this->prepareCrudeSetup();
 
@@ -72,7 +74,7 @@ class AreaCRUD extends Crude implements
 
     public function getCompanies()
     {
-        return (new \Company)
+        return (new Company)
             ->select(
                 'id',
                 'name as label'

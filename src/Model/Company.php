@@ -1,5 +1,7 @@
 <?php
 
+namespace Zephia\ZLeader\Model;
+
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class Company extends Eloquent {
@@ -8,6 +10,7 @@ class Company extends Eloquent {
 
     protected $fillable = [
         'name',
+        'image',
     ];
 
     public function areas()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Zephia\ZLeader\Engine\Crude;
+namespace Zephia\ZLeader\Crude;
 
 use Crude;
 use CrudeListInterface;
@@ -10,8 +10,9 @@ use CrudeDeleteInterface;
 use CrudeWithValidationInterface;
 use CrudeFromModelTrait;
 use CrudeWithValidationTrait;
+use Zephia\ZLeader\Model\Field;
 
-class CompanyCRUD extends Crude implements 
+class FieldCRUD extends Crude implements 
     CrudeListInterface, 
     CrudeStoreInterface,
     CrudeUpdateInterface,
@@ -23,23 +24,33 @@ class CompanyCRUD extends Crude implements
 
     public function __construct()
     {
-        $this->setModel(new \Company);
+        $this->setModel(new Field);
 
         $this->prepareCrudeSetup();
 
         $this->crudeSetup
             ->usePopup()
-            ->setTitle("Empresas")
+            ->setTitle("Campos")
             ->setColumn([
                 'name',
+                'key',
             ])
             ->setTrans([
-                'id' => 'ID',
-                'name' => 'Nombre',
+                'id'         => 'ID',
+                'name'       => 'Nombre',
+                'key'        => 'Key',
+                'filtrable'  => 'Filtrable',
+                'columnable' => 'Encolumnable',
+                'order'      => 'Orden',
             ])
             ->setFilters([
                 'name',
-            ]);
+            ])
+            ->setTypes([
+                'filtrable'  => 'checkbox',
+                'columnable' => 'checkbox',
+            ])
+            ->useOrderedList('name', 'order');
 
         $this->setValidationRules([
             'name' => 'required|max:100',
