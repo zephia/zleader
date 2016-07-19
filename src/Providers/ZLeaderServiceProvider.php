@@ -52,7 +52,7 @@ class ZLeaderServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        require_once __DIR__ . '/../../vendor/autoload.php';
+        //require_once __DIR__ . '/../../vendor/autoload.php';
 
         $this->mergeConfigFrom(__DIR__.'/../../config/zleader.php', $this->packageName);
         $this->mergeConfigFrom(__DIR__.'/../../config/crude.php', 'crude');
