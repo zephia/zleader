@@ -10,6 +10,7 @@
     "license": "MIT",
     "minimum-stability": "stable",
     "require": {
+        "php" : "^5.6 || ^7.0",
         "cartalyst/data-grid": "3.0.*",
         "dompdf/dompdf": "*",
         "kris/laravel-form-builder": "1.*",
