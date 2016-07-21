@@ -18,6 +18,7 @@ return [
         Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
         Cviebrock\EloquentSluggable\ServiceProvider::class,
         JanDolata\CrudeCRUD\CrudeCRUDServiceProvider::class,
+        SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider::class,
     ],
 
     /*
@@ -31,7 +32,8 @@ return [
     */
     'aliases' => [
         'DataGrid' => Cartalyst\DataGrid\Laravel\Facades\DataGrid::class,
-        'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class
+        'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
+        'Facebook' => SammyK\LaravelFacebookSdk\FacebookFacade::class,
     ],
 
     /*

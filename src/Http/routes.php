@@ -13,5 +13,7 @@ Route::group(['prefix' => 'zleader'], function( ){
 Route::group(['prefix' => 'zleader/api'], function( ){
     Route::post('/lead/form/{form_slug}', 'Api\LeadController@store');
     Route::post('/fbwebhook', 'Api\FbwebhookController@store');
+    Route::get('/fbwebhook', 'Api\FbwebhookController@store');
+    Route::get('/fb-leadgen-platform', 'Api\FbwebhookController@platform');
     Route::get('/lead/notifications/queue/release', 'Api\LeadController@releaseNotificationQueue');
 });

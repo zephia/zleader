@@ -33,6 +33,8 @@ class LeadController extends Controller
 
             $lead->remote_ip = $request->ip();
 
+            $lead->user_agent = $request->header('User-Agent');;
+
             if($request->utm_source)
                 $lead->utm_source = $request->utm_source;
 
@@ -62,6 +64,12 @@ class LeadController extends Controller
                     $leadValue->key = $key;
                     $leadValue->value = $value;
                     $leadValue->save();
+                }
+            }
+
+            if ($lead) {
+                if (!empty($form->integration)) {
+                    $integration = new $form->integration->class($lead->id);
                 }
             }
         }

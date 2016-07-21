@@ -3,6 +3,7 @@
 namespace Zephia\ZLeader\Crude;
 
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\DB;
 use Crude;
 use CrudeListInterface;
 use CrudeStoreInterface;
@@ -37,6 +38,7 @@ class FormCRUD extends Crude implements
                 'id',
                 'name',
                 'area_name',
+                'company_name',
             ])
             ->setFilters([
                 'name',
@@ -49,6 +51,7 @@ class FormCRUD extends Crude implements
                 'notification_emails',
                 'notification_subject',
                 'user_notification_subject',
+                'fb_integration_prefix',
                 'slug',
                 'form_code',
             ])
@@ -65,10 +68,12 @@ class FormCRUD extends Crude implements
                 'name' => 'Nombre',
                 'area_id' => 'Area',
                 'area_name' => 'Area',
+                'company_name' => 'Empresa',
                 'feedback_url' => 'Thank you page URL',
                 'notification_emails' => 'E-mails de notificación',
                 'notification_subject' => 'Asunto de notificación (interna)',
                 'user_notification_subject' => 'Asunto de notificación (usuario)',
+                'fb_integration_prefix' => 'Prefijo de integración Facebook',
                 'slug' => 'Slug',
                 'form_code' => 'Código',
             ]);
@@ -83,6 +88,7 @@ class FormCRUD extends Crude implements
     {
         $query = $this->model
             ->leftJoin('zleader_areas', 'zleader_forms.area_id', '=', 'zleader_areas.id')
+            ->leftJoin('zleader_companies', 'zleader_areas.company_id', '=', 'zleader_companies.id')
             ->select(
                 'zleader_forms.id',
                 'zleader_forms.name',
@@ -92,7 +98,9 @@ class FormCRUD extends Crude implements
                 'zleader_forms.notification_subject',
                 'zleader_forms.user_notification_subject',
                 'zleader_forms.slug',
-                'zleader_areas.name as area_name'
+                'zleader_forms.fb_integration_prefix',
+                'zleader_areas.name as area_name',
+                'zleader_companies.name as company_name'
             );
 
         return $query;
@@ -102,7 +110,7 @@ class FormCRUD extends Crude implements
     {
         $script_url = str_replace(['http://','https://'],['',''],URL::to('/')) . '/zl.js';
 
-        $model->form_code = '<form class="zlform" id="zlform-' . $model->id . '" action="' . URL::action('\Zephia\ZLeader\Http\Controllers\Api\LeadController@store', ['slug' => $model->slug]) . '" method="post">' . "\r\n<!-- Fields: (zlfield_example) -->\r\n" . '</form>' . "\r\n";
+        $model->form_code = '<form class="zlform" action="' . URL::action('\Zephia\ZLeader\Http\Controllers\Api\LeadController@store', ['slug' => $model->slug]) . '" method="post">' . "\r\n<!-- Fields: (zlfield_example) -->\r\n" . '</form>' . "\r\n";
         $model->form_code.= "<script type=\"text/javascript\">" . "\r\n" . "(function(d,s,e,t){e=d.createElement(s);e.type='text/java'+s;e.async='async';" . "\r\n" . "e.src='http'+('https:'===location.protocol?'s://s':'://')+'" . $script_url . "';t=d.getElementsByTagName(s)[0];" . "\r\n" . "t.parentNode.insertBefore(e,t);})(document,'script');" . "\r\n" . "</script>";
         return $model;
     }
@@ -110,9 +118,10 @@ class FormCRUD extends Crude implements
     public function getAreas()
     {
         return (new Area)
+            ->leftJoin('zleader_companies', 'zleader_areas.company_id', '=', 'zleader_companies.id')
             ->select(
-                'id',
-                'name as label'
+                'zleader_areas.id',
+                DB::raw("CONCAT(zleader_areas.name, ' / ', zleader_companies.name) AS label")
             )
             ->get();
     }

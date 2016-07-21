@@ -30,15 +30,21 @@ class Form extends Eloquent
         'notification_emails',
         'notification_subject',
         'user_notification_subject',
+        'fb_integration_prefix',
     ];
 
     public function area()
     {
-        return $this->belongsTo('Zephia\ZLeader\Model\Area');
+        return $this->belongsTo(Area::class);
     }
 
     public function leads()
     {
-        return $this->hasMany('Zephia\ZLeader\Model\Lead');
+        return $this->hasMany(Lead::class);
+    }
+
+    public function integration()
+    {
+        return $this->belongsTo(Integration::class);
     }
 }

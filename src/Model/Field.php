@@ -12,11 +12,11 @@ class Field extends Eloquent
 
     public function scopeColumnables($query)
     {
-        return $query->where('columnable', '=', true);
+        return $query->where('columnable', '=', true)->orderBy('order','asc');
     }
 
     public function scopeFiltrables($query)
     {
-        return $query->where('filtrable', '=', true);
+        return $query->where('filtrable', '=', true)->orderBy('order','asc');
     }
 }
