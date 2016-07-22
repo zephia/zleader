@@ -19,7 +19,9 @@ class Lead extends Eloquent
         $values = $this->values->toArray();
         $index = array_search($key, array_column($values, 'key'));
 
-        return $values[$index]['value'];
+        if ($index !== false) {
+            return $values[$index]['value'];
+        }
     }
 
     public function form()
