@@ -289,8 +289,8 @@ float:none!important;
 		<td class="header container"><div class="content">
 				<table bgcolor="#999999">
 					<tr>
-						<td><img src="http://placehold.it/200x50/"/></td>
-						<td align="right"><h6 class="collapse">Basic</h6></td>
+						<td><img src="{{ $lead->form->area->company->image }}" width="200"/></td>
+						<td align="right"><h6 class="collapse">{{ $lead->form->area->name }}</h6></td>
 					</tr>
 				</table>
 			</div></td>
@@ -303,23 +303,33 @@ float:none!important;
 		<td class="container" bgcolor="#FFFFFF"><div class="content">
 				<table>
 					<tr>
-						<td><h3>Hi, Elijah Baily</h3>
-							<p class="lead">Phasellus dictum sapien a neque luctus cursus. Pellentesque sem dolor, fringilla et pharetra vitae.</p>
-							<p>Phasellus dictum sapien a neque luctus cursus. Pellentesque sem dolor, fringilla et pharetra vitae. consequat vel lacus. Sed iaculis pulvinar ligula, ornare fringilla ante viverra et. In hac habitasse platea dictumst. Donec vel orci mi, eu congue justo. Integer eget odio est, eget malesuada lorem. Aenean sed tellus dui, vitae viverra risus. Nullam massa sapien, pulvinar eleifend fringilla id, convallis eget nisi. Mauris a sagittis dui. Pellentesque non lacinia mi. Fusce sit amet libero sit amet erat venenatis sollicitudin vitae vel eros. Cras nunc sapien, interdum sit amet porttitor ut, congue quis urna.</p>
-							<p class="callout"> Phasellus dictum sapien a neque luctus cursus. Pellentesque sem dolor, fringilla et pharetra vitae. <a href="#">Click it! &raquo;</a> </p>
+						<td><h3>Hola, {{ $lead->getValueByKey('first_name') }}</h3>
+							<p class="lead">Gracias por contactarte.</p>
+							<p>Nos estaremos comunicando con usted a la brevedad.</p>
 							<table class="social" width="100%">
 								<tr>
 									<td><table align="left" class="column">
 											<tr>
-												<td><h5 class="">Connect with Us:</h5>
-													<p class=""><a href="#" class="soc-btn fb">Facebook</a> <a href="#" class="soc-btn tw">Twitter</a> <a href="#" class="soc-btn gp">Google+</a></p></td>
+												<td><h5 class="">Connecta con nosotros:</h5>
+													<p class="">
+													@if(!empty($lead->form->area->company->facebook_url))
+														<a href="{{ $lead->form->area->company->facebook_url }}" class="soc-btn fb">Facebook</a> 
+													@endif
+													@if(!empty($lead->form->area->company->twitter_url))
+														<a href="{{ $lead->form->area->company->twitter_url }}" class="soc-btn tw">Twitter</a> 
+													@endif
+													@if(!empty($lead->form->area->company->googleplus_url))
+														<a href="{{ $lead->form->area->company->googleplus_url }}" class="soc-btn gp">Google +</a> 
+													@endif
+													</p>
+												</td>
 											</tr>
 										</table>
 										<table align="left" class="column">
 											<tr>
-												<td><h5 class="">Contact Info:</h5>
-													<p>Phone: <strong>408.341.0600</strong><br/>
-														Email: <strong><a href="emailto:hseldon@trantor.com">hseldon@trantor.com</a></strong></p></td>
+												<td><h5 class="">Infornación de contacto:</h5>
+													<p>Tel: <strong>{{ $lead->form->area->company->phone_number }}</strong><br/>
+														E-mail: <strong><a href="emailto:{{ $lead->form->area->company->email }}">{{ $lead->form->area->company->email }}</a></strong></p></td>
 											</tr>
 										</table>
 										<span class="clear"></span></td>
@@ -337,8 +347,7 @@ float:none!important;
 		<td class="container"><div class="content">
 				<table>
 					<tr>
-						<td align="center"><p> <a href="#">Terms</a> | <a href="#">Privacy</a> | <a href="#">
-								<unsubscribe>Unsubscribe</unsubscribe>
+						<td align="center"><p> <a href="{{ $lead->form->area->company->terms_url }}">Términos y condiciones</a> | <a href="{{ $lead->form->area->company->privacy_url }}">Políticas de privacidad</a>
 								</a> </p></td>
 					</tr>
 				</table>
