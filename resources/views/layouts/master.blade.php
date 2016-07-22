@@ -26,6 +26,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
   @yield('styles')
 
+  <style type="text/css">
+    #crudeContainer .container{
+      width: auto;
+    }
+    .content-wrapper .crude-box .crude-header .crude-header-title{
+      background-color: #DD4B39!important;
+    }
+    .main-footer a{
+      color: #DD4B39;
+    }
+  </style>
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -130,14 +142,6 @@ desired effect
 <!-- ./wrapper -->
 
 <!-- REQUIRED JS SCRIPTS -->
-
-<!-- jQuery 2.2.3 -->
-<script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
-<!-- Bootstrap 3.3.6 -->
-<script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/bootstrap/js/bootstrap.min.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/js/app.min.js') }}"></script>
-
 @yield('scripts')
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.

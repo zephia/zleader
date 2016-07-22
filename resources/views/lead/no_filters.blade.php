@@ -1,3 +1,3 @@
 <script type="text/template" data-grid="standard" data-template="no_filters">
-	<i>There are no filters applied.</i>
+	<i>No hay filtros aplicados.</i>
 </script>

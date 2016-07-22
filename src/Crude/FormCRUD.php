@@ -41,10 +41,6 @@ class FormCRUD extends Crude implements
                 'area_name',
                 'company_name',
             ])
-            ->setFilters([
-                'name',
-                'area_name' => 'Area',
-            ])
             ->setAddAndEditForm([
                 'name', 
                 'area_id',
