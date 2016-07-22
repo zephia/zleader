@@ -57,6 +57,7 @@ class ZLeaderServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../../config/zleader.php', $this->packageName);
         $this->mergeConfigFrom(__DIR__.'/../../config/crude.php', 'crude');
         $this->mergeConfigFrom(__DIR__.'/../../config/sluggable.php', 'sluggable');
+        $this->mergeConfigFrom(__DIR__.'/../../config/laravel-facebook-sdk.php', 'laravel-facebook-sdk');
 
         $this->registerProviders();
         $this->registerAliases();
