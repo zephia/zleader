@@ -68,7 +68,7 @@ class LeadController extends Controller
             }
 
             if ($lead) {
-                if (!empty($form->integration)) {
+                if (!empty($form->integration) && !empty($form->integration_id)) {
                     $integration = new $form->integration->class($lead->id);
                 }
             }

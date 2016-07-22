@@ -14,6 +14,7 @@ use CrudeFromModelTrait;
 use CrudeWithValidationTrait;
 use Zephia\ZLeader\Model\Form;
 use Zephia\ZLeader\Model\Area;
+use Zephia\ZLeader\Model\Integration;
 
 class FormCRUD extends Crude implements 
     CrudeListInterface, 
@@ -52,21 +53,25 @@ class FormCRUD extends Crude implements
                 'notification_subject',
                 'user_notification_subject',
                 'fb_integration_prefix',
+                'integration_id',
                 'slug',
                 'form_code',
             ])
             ->setTypes([
                 'area_id' => 'select',
+                'integration_id' => 'select',
                 'slug' => 'info',
                 'form_code' => 'markdown',
             ])
             ->setSelectOptions([
-                'area_id' => $this->getAreas()
+                'area_id' => $this->getAreas(),
+                'integration_id' => $this->getIntegrations(),
             ])
             ->setTrans([
                 'id' => 'ID',
                 'name' => 'Nombre',
                 'area_id' => 'Area',
+                'integration_id' => 'Integración de CRM',
                 'area_name' => 'Area',
                 'company_name' => 'Empresa',
                 'feedback_url' => 'Thank you page URL',
@@ -93,6 +98,7 @@ class FormCRUD extends Crude implements
                 'zleader_forms.id',
                 'zleader_forms.name',
                 'zleader_forms.area_id',
+                'zleader_forms.integration_id',
                 'zleader_forms.feedback_url',
                 'zleader_forms.notification_emails',
                 'zleader_forms.notification_subject',
@@ -124,5 +130,16 @@ class FormCRUD extends Crude implements
                 DB::raw("CONCAT(zleader_areas.name, ' / ', zleader_companies.name) AS label")
             )
             ->get();
+    }
+
+    public function getIntegrations()
+    {
+        $integrations = (new Integration)
+            ->select('id', 'name as label')
+            ->where('type', 'like', 'out')
+            ->orderBy('name')
+            ->get()
+            ->toArray();
+        return $integrations;
     }
 }

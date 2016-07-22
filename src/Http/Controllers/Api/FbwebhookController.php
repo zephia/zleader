@@ -134,7 +134,7 @@ class FbwebhookController extends Controller
                                 case 'Clio Mio - Venta Convencional':
                                 case 'Plan Rombo':
                                     $company_name = 'TAGLE';
-                                    $emails = 'gdiaz@tagle.com.ar,sdonadio@taglerenault.com.ar';
+                                    $emails = 'marketing@taglerenault.com.ar,sdonadio@taglerenault.com.ar';
                                     break;
 
                                 case 'Note':
@@ -142,7 +142,7 @@ class FbwebhookController extends Controller
                                 case 'March':
                                 case 'Frontier':
                                     $company_name = 'NIX';
-                                    $emails = 'gdiaz@tagle.com.ar,sdonadio@taglerenault.com.ar';
+                                    $emails = 'marketing@taglerenault.com.ar,sdonadio@taglerenault.com.ar';
                                     break;
 
                                 case 'Autoplan 208 Adjudicado':
