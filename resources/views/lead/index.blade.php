@@ -26,6 +26,7 @@ Leads - @parent
 <script>
 $(function()
 {
+     var xhr_lead;
     // Setup DataGrid
     var grid = $.datagrid('standard', '.table', '#pagination', '.applied-filters',
     {
@@ -37,6 +38,41 @@ $(function()
             $('[data-per-page]').val(obj.opt.throttle);
             // Disable the export button if no results
             $('button[name="export"]').prop('disabled', (obj.pagination.filtered === 0) ? true : false);
+
+            $('.table tbody tr').on('click', function(event){
+                event.preventDefault();
+
+                $('.loader').fadeIn();
+
+                try { 
+                    xhr_lead.abort();
+                }
+                catch(e){};
+
+                xhr_lead = $.ajax({
+                    dataType: "json",
+                    url: "leads/" + $(this).data('lead-id')
+                })
+                .done(function( lead ) {
+                    $('#leadShow .modal-body').empty();
+                    $.each(lead.values, function(index, value){
+                        addLeadField(value.label, value.value);
+                        $('#leadShow').modal('show');
+                    });
+                    addLeadField('Fecha', lead.created_at);
+                    addLeadField('UTM Source', lead.utm_source);
+                    addLeadField('UTM Campaign', lead.utm_campaign);
+                    addLeadField('UTM medium', lead.utm_medium);
+                    addLeadField('UTM Term', lead.utm_term);
+                    addLeadField('UTM Content', lead.utm_content);
+                    addLeadField('URL', lead.referer);
+                    addLeadField('IP', lead.remote_ip);
+
+                    $('.loader').fadeOut();
+                });
+
+                return false;
+            });
         }
     });
     // Date Picker
@@ -52,33 +88,10 @@ $(function()
     });
 
     function addLeadField(name, value) {
-        $('#leadShow .modal-body').append('<div class="col-sm-12"><div class="col-sm-12"><strong>' + name + ':</strong></div><div class="col-sm-12">' + value + '</div></div>');
+        if(value!='') {
+            $('#leadShow .modal-body').append('<div class="row"><div class="col-sm-4 text-right"><strong>' + name + ':</strong></div><div class="col-sm-8">' + value + '</div></div>');
+        }
     }
-
-    $('.table tbody').on('click', function(){
-        console.log("click");
-        $.ajax({
-            dataType: "json",
-            url: "leads/222"
-        })
-        .done(function( lead ) {
-            console.log(lead);
-            $('#leadShow .modal-body').empty();
-            $.each(lead.values, function(index, value){
-                console.log(value);
-                addLeadField(value.label, value.value);
-                $('#leadShow').modal('show');
-            });
-            addLeadField('Creado', lead.created_at);
-            addLeadField('UTM Source', lead.utm_source);
-            addLeadField('UTM Campaign', lead.utm_campaign);
-            addLeadField('UTM medium', lead.utm_medium);
-            addLeadField('UTM Term', lead.utm_term);
-            addLeadField('UTM Content', lead.utm_content);
-            addLeadField('URL', lead.referer);
-            addLeadField('IP', lead.remote_ip);
-        });
-    });
 });
 </script>
 @stop
@@ -212,7 +225,7 @@ $(function()
                 <h3 class="box-title">Lista</h3>
             </div>
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-hover" data-source="{{ action('\Zephia\ZLeader\Http\Controllers\LeadController@datagrid') }}" data-grid="standard">
+                <table class="table table-striped table-bordered table-hover table-leads" data-source="{{ action('\Zephia\ZLeader\Http\Controllers\LeadController@datagrid') }}" data-grid="standard">
                     <thead>
                         <tr>
                             <th class="sortable" data-grid="standard" data-sort="date">Fecha</th>
@@ -221,7 +234,6 @@ $(function()
                             @endforeach
                             <th class="sortable" data-grid="standard" data-sort="utm_source">Source</th>
                             <th class="sortable" data-grid="standard" data-sort="utm_medium">Medium</th>
-                            <th class="sortable" data-grid="standard" data-sort="utm_campaign">Campaign</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -240,7 +252,7 @@ $(function()
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Lead detalle</h4>
+        <h4 class="modal-title" id="myModalLabel">Detalle de lead</h4>
       </div>
       <div class="modal-body">
         <div class="row">

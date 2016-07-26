@@ -15,7 +15,8 @@ class FbwebhookController extends Controller
 {
     public function store(Request $request)
     {
-        $access_token = 'EAAXOS2tqc5EBABZAX3NnTDSMoZB0u0p40nxodAzeoAuWWYgJZCMZAMYpJZCsmR3AyipkPQoR2NvYQr3Wo7kGuTPRvPvRF7Yc2l5o5u3PFUFYVjifASz3eY2VVjjACo5KLm2xlGBn1ufYTPdi1SeIU';
+        $access_token = env('FACEBOOK_LEADGEN_ACCESS_TOKEN', 'token');
+        
         Log::info('New Webhook:');
 
         if(is_array($request->entry)) {
@@ -111,10 +112,14 @@ class FbwebhookController extends Controller
                                 foreach($form_name_fields as $fields) {
                                     $field_data = explode('=', $fields);
                                     if(!empty(trim($field_data[0])) && !empty(trim($field_data[1]))) {
+                                        $data_key = trim($field_data[0]);
+                                        $aux = explode(' ', $field_data[1]);
+                                        $data_value = trim(array_shift($aux));
+
                                         $leadValue = new LeadValue;
                                         $leadValue->lead_id = $lead->id;
-                                        $leadValue->key = trim($field_data[0]);
-                                        $leadValue->value = trim($field_data[1]);
+                                        $leadValue->key = $data_key;
+                                        $leadValue->value = $data_value;
                                         $leadValue->save();
                                     }
                                 }
@@ -125,48 +130,6 @@ class FbwebhookController extends Controller
                             Log::warning('Form "' . $form_integration_prefix . '" not found');
 
                             switch($leadgen['form_name']) {
-                                case 'Plan Rombo - selector de modelos':
-                                case 'Renault Kangoo - Venta Convencional':
-                                case 'Megane 3 - Venta Convencional':
-                                case 'Renault Duster - Venta Convencional':
-                                case 'Sandero - Venta Convencional':
-                                case 'Clio Mio -Venta Convencional':
-                                case 'Clio Mio - Venta Convencional':
-                                case 'Plan Rombo':
-                                    $company_name = 'TAGLE';
-                                    $emails = 'marketing@taglerenault.com.ar,sdonadio@taglerenault.com.ar';
-                                    break;
-
-                                case 'Note':
-                                case 'Sentra':
-                                case 'March':
-                                case 'Frontier':
-                                    $company_name = 'NIX';
-                                    $emails = 'marketing@taglerenault.com.ar,sdonadio@taglerenault.com.ar';
-                                    break;
-
-                                case 'Autoplan 208 Adjudicado':
-                                case 'Autoplan 208 Pea':
-                                case 'Autoplan 2008':
-                                case 'Autoplan 2008 Adjudicado':
-                                case 'Auto Plan - Partner Patagónica':
-                                case 'Autoplan - 208':
-                                case 'Venta Directa - Partner':
-                                case 'Venta Directa - 408':
-                                case 'Venta Directa - 308':
-                                case 'Venta Directa - Partner Furgón':
-                                case 'Venta Directa - 208':
-                                case 'Auto Plan -  Partner Furgón':
-                                    $company_name = 'Avant';
-                                    $emails = 'rramondelli@avant.com.ar,msaura@avant.com.ar';
-                                    break;
-
-                                case 'Motcor Planes Genérico':
-                                case 'Fiat Palio - Plan Fiat':
-                                    $company_name = 'Moctor';
-                                    $emails = 'pereyram@motcor.com.ar';
-                                    break;
-
                                 default:
                                     Log::warning('Unknown form, reporting...');
                                     $company_name = 'Leadgen';

@@ -2,14 +2,13 @@
 
 	<% _.each(results, function(r) { %>
 
-		<tr>
+		<tr data-lead-id="<%= r.id %>">
 			<td><%= r.date %></td>
             @foreach($columnables as $field)
 			<td><%= r.{{ $field->key }} %></td>
             @endforeach
             <td><%= r.utm_source %></td>
             <td><%= r.utm_medium %></td>
-            <td><%= r.utm_campaign %></td>
 		</tr>
 
 	<% }); %>

@@ -30,11 +30,48 @@ scratch. This page gets rid of all links and provides the needed markup only.
     #crudeContainer .container{
       width: auto;
     }
+    .pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover{
+      background-color: #DD4B39!important;
+      border-color:#DD4B39!important;
+    }
     .content-wrapper .crude-box .crude-header .crude-header-title{
       background-color: #DD4B39!important;
     }
     .main-footer a{
       color: #DD4B39;
+    }
+    #leadShow .modal-body .row {
+      margin: 0 -5px;
+    }
+    #leadShow .modal-body .row > div{
+      padding: 0 5px;
+    }
+    .loader{
+       position: fixed;
+       z-index: 99;
+       left:50%;
+       top: 50%;
+       display:none;
+    }
+    .loader span{
+      left:50%;
+      z-index: 999;
+      width: 200px;
+      margin:auto;
+      background-color: #DD4B39;
+      font-size: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      padding: 30px;
+      display: block;
+      text-align: center;
+      color: white;
+    }
+    .loader span:after{
+      content: "Cargando...";
+    }
+    .table-leads tr{
+      cursor: pointer;
     }
   </style>
 
