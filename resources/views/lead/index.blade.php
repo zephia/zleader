@@ -234,6 +234,8 @@ $(function()
                             @endforeach
                             <th class="sortable" data-grid="standard" data-sort="utm_source">Source</th>
                             <th class="sortable" data-grid="standard" data-sort="utm_medium">Medium</th>
+                            <th class="sortable" data-grid="standard" data-sort="utm_medium">Empresa</th>
+                            <th class="sortable" data-grid="standard" data-sort="utm_medium">Área</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

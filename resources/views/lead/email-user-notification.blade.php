@@ -283,7 +283,7 @@ float:none!important;
 </style>
 </head>
 <body bgcolor="#FFFFFF">
-<table class="head-wrap" bgcolor="#999999">
+<table class="head-wrap" bgcolor="#999999" width="100%">
 	<tr>
 		<td></td>
 		<td class="header container"><div class="content">
@@ -297,7 +297,7 @@ float:none!important;
 		<td></td>
 	</tr>
 </table>
-<table class="body-wrap">
+<table class="body-wrap" width="100%">
 	<tr>
 		<td></td>
 		<td class="container" bgcolor="#FFFFFF"><div class="content">
@@ -341,7 +341,7 @@ float:none!important;
 		<td></td>
 	</tr>
 </table>
-<table class="footer-wrap">
+<table class="footer-wrap" width="100%">
 	<tr>
 		<td></td>
 		<td class="container"><div class="content">

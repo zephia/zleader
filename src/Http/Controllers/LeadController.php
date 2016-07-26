@@ -22,6 +22,8 @@ class LeadController extends Controller
     {
         $lead = Lead::with(['values'])->find($lead_id);
 
+        dd($lead->user_platform);
+
         $response_data = $lead;
 
         unset(

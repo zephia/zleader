@@ -9,6 +9,8 @@
             @endforeach
             <td><%= r.utm_source %></td>
             <td><%= r.utm_medium %></td>
+            <td><%= r.company_name %></td>
+            <td><%= r.area_name %></td>
 		</tr>
 
 	<% }); %>

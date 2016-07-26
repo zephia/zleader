@@ -11,6 +11,14 @@ class Company extends Eloquent {
     protected $fillable = [
         'name',
         'image',
+        'email',
+        'phone_number',
+        'facebook_url',
+        'twitter_url',
+        'googleplus_url',
+        'terms_url',
+        'privacy_url',
+        'website_url',
     ];
 
     public function areas()

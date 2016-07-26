@@ -19,6 +19,7 @@ return [
         Cviebrock\EloquentSluggable\ServiceProvider::class,
         JanDolata\CrudeCRUD\CrudeCRUDServiceProvider::class,
         SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
     ],
 
     /*
@@ -34,18 +35,33 @@ return [
         'DataGrid' => Cartalyst\DataGrid\Laravel\Facades\DataGrid::class,
         'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
         'Facebook' => SammyK\LaravelFacebookSdk\FacebookFacade::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | Class Integrations
+    | Commands
     |--------------------------------------------------------------------------
     |
-    | This array of class integrations will be registered when this application
+    | This array of commands aliases will be registered when this application
     | is started.
     |
     */
-    'input_integrations' => [
-        'FacebookForm' => Zephia\ZLeader\Integrations\Input\FacebookForm::class,
+    'commands' => [
+        Zephia\ZLeader\Console\Commands\ReleaseLeadQueue::class,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Middlewares
+    |--------------------------------------------------------------------------
+    |
+    | This array of class middlewares will be registered when this application
+    | is started.
+    |
+    */
+    'middlewares' => [
+        'zleadercors' => Zephia\ZLeader\Http\Middleware\Cors::class,
+    ],
+
 ];

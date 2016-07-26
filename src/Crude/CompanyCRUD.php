@@ -37,7 +37,15 @@ class CompanyCRUD extends Crude implements
             ->setTrans([
                 'id'    => 'ID',
                 'name'  => 'Nombre',
-                'image' => 'Imagen'
+                'image' => 'Imagen',
+                'email' => 'E-mail',
+                'phone_number' => 'Teléfono',
+                'website_url' => 'Sitio web URL',
+                'facebook_url' => 'Facebook URL',
+                'twitter_url' => 'Twitter URL',
+                'googleplus_url' => 'Google+ URL',
+                'terms_url' => 'Términos y condiciones URL',
+                'privacy_url' => 'Política de privacidad URL',
             ])
             ->setFilters([
                 'name',

@@ -10,10 +10,6 @@ class ZLeaderServiceProvider extends ServiceProvider
 {
     protected $packageName = 'ZLeader';
 
-    protected $commands = [
-        'Zephia\ZLeader\Console\Commands\ReleaseLeadQueue',
-    ];
-
     /**
      * Bootstrap the application services.
      *
@@ -70,11 +66,19 @@ class ZLeaderServiceProvider extends ServiceProvider
         $this->registerProviders();
         $this->registerAliases();
         $this->registerCommands();
+        $this->registerMiddlewares();
     }
 
     protected function registerCommands()
     {
-        $this->commands($this->commands);
+        $this->commands(config($this->packageName . '.commands', []));
+    }
+
+    protected function registerMiddlewares()
+    {
+        foreach (config($this->packageName . '.middlewares', []) as $middlewareName => $middlewareClass) {
+            $this->app['router']->middleware($middlewareName, $middlewareClass);
+        }
     }
 
     public function setupRoutes(Router $router)

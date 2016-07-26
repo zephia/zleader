@@ -3,11 +3,13 @@
 namespace Zephia\ZLeader\Model;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Jenssegers\Agent\Agent;
 use Zephia\ZLeader\Model\LeadValue;
 
 class Lead extends Eloquent
 {
     protected $table = 'zleader_leads';
+    protected $appends = ['user_platform'];
 
     public function values()
     {
@@ -27,5 +29,22 @@ class Lead extends Eloquent
     public function form()
     {
         return $this->belongsTo('Zephia\ZLeader\Model\Form');
+    }
+
+    public function getUserPlatformAttribute($value)
+    {
+        $agent = new Agent();
+
+        $agent->setUserAgent($value);
+
+        if($agent->isDesktop()) {
+            return 'Desktop';
+        } elseif($agent->isMobile()) {
+            if($agent->isTablet()) {
+                return 'Tablet';
+            } else {
+                return 'Mobile';
+            }
+        }
     }
 }
