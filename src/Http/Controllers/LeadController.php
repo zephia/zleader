@@ -22,17 +22,15 @@ class LeadController extends Controller
     {
         $lead = Lead::with(['values'])->find($lead_id);
 
-        $response_data = $lead;
-
         unset(
-            $response_data['updated_at'], 
-            $response_data['notify'], 
-            $response_data['form_id'], 
-            $response_data['fb_leadgen_id'], 
-            $response_data['user_agent']
+            $lead['updated_at'], 
+            $lead['notify'], 
+            $lead['form_id'], 
+            $lead['fb_leadgen_id'], 
+            $lead['user_agent']
         );
 
-        return Response::json($response_data);
+        return Response::json($lead);
     }
 
     public function datagrid()

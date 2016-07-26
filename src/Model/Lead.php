@@ -9,7 +9,7 @@ use Zephia\ZLeader\Model\LeadValue;
 class Lead extends Eloquent
 {
     protected $table = 'zleader_leads';
-    protected $appends = ['user_platform'];
+    protected $appends = ['remote_platform'];
 
     public function values()
     {
@@ -31,7 +31,7 @@ class Lead extends Eloquent
         return $this->belongsTo('Zephia\ZLeader\Model\Form');
     }
 
-    public function getUserPlatformAttribute($value)
+    public function getRemotePlatformAttribute($value)
     {
         $agent = new Agent();
 
