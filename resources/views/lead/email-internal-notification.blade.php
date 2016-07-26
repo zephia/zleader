@@ -308,7 +308,7 @@ float:none!important;
 							<table>
 							@foreach($lead->values as $field)
 								<tr>
-									<td><strong>{{ $field->key }}</strong></td>
+									<td><strong>{{ $field->label }}</strong></td>
 									<td>{{ $field->value }}</td>
 								</tr>
 							@endforeach

@@ -3,6 +3,7 @@ Route::group(['prefix' => 'zleader'], function( ){
     Route::get('/', 'DashboardController@index');
     Route::get('/leads', 'LeadController@index');
     Route::get('/leads/datagrid/source', 'LeadController@datagrid');
+    Route::get('/leads/{lead_id}', 'LeadController@show');
     Route::get('/forms', 'FormController@index');
     Route::get('/config', 'ConfigController@index');
     Route::get('/companies', 'CompanyController@index');
@@ -15,5 +16,4 @@ Route::group(['prefix' => 'zleader/api'], function( ){
     Route::post('/fbwebhook', 'Api\FbwebhookController@store');
     Route::get('/fbwebhook', 'Api\FbwebhookController@store');
     Route::get('/fb-leadgen-platform', 'Api\FbwebhookController@platform');
-    Route::get('/lead/notifications/queue/release', 'Api\LeadController@releaseNotificationQueue');
 });

@@ -29,7 +29,7 @@ $(function()
     // Setup DataGrid
     var grid = $.datagrid('standard', '.table', '#pagination', '.applied-filters',
     {
-        throttle: 20,
+        throttle: 25,
         loader: '.loader',
         callback: function(obj)
         {
@@ -49,6 +49,35 @@ $(function()
     $('[data-per-page]').on('change', function(){
         grid.setThrottle($(this).val());
         grid.refresh();
+    });
+
+    function addLeadField(name, value) {
+        $('#leadShow .modal-body').append('<div class="col-sm-12"><div class="col-sm-12"><strong>' + name + ':</strong></div><div class="col-sm-12">' + value + '</div></div>');
+    }
+
+    $('.table tbody').on('click', function(){
+        console.log("click");
+        $.ajax({
+            dataType: "json",
+            url: "leads/222"
+        })
+        .done(function( lead ) {
+            console.log(lead);
+            $('#leadShow .modal-body').empty();
+            $.each(lead.values, function(index, value){
+                console.log(value);
+                addLeadField(value.label, value.value);
+                $('#leadShow').modal('show');
+            });
+            addLeadField('Creado', lead.created_at);
+            addLeadField('UTM Source', lead.utm_source);
+            addLeadField('UTM Campaign', lead.utm_campaign);
+            addLeadField('UTM medium', lead.utm_medium);
+            addLeadField('UTM Term', lead.utm_term);
+            addLeadField('UTM Content', lead.utm_content);
+            addLeadField('URL', lead.referer);
+            addLeadField('IP', lead.remote_ip);
+        });
     });
 });
 </script>
@@ -205,6 +234,27 @@ $(function()
 {{-- Pagination --}}
 <footer id="pagination" data-grid="standard"></footer>
 
+<!-- Modal -->
+<div class="modal fade" id="leadShow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Lead detalle</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        
+            
+            
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 @include('ZLeader::lead.results', ['columnables' => $columnables])
 @include('ZLeader::lead.no_results')
 @include('ZLeader::lead.pagination')

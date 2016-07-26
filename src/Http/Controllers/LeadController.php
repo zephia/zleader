@@ -3,6 +3,8 @@
 namespace Zephia\ZLeader\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use DataGrid;
 use Zephia\ZLeader\Model\Lead;
 use Zephia\ZLeader\Model\Field;
@@ -14,6 +16,23 @@ class LeadController extends Controller
         $columnables = Field::columnables()->get();
         $filtrables = Field::filtrables()->get();
         return view('ZLeader::lead.index', ['columnables' => $columnables, 'filtrables' => $filtrables]);
+    }
+
+    public function show(Request $request, $lead_id)
+    {
+        $lead = Lead::with(['values'])->find($lead_id);
+
+        $response_data = $lead;
+
+        unset(
+            $response_data['updated_at'], 
+            $response_data['notify'], 
+            $response_data['form_id'], 
+            $response_data['fb_leadgen_id'], 
+            $response_data['user_agent']
+        );
+
+        return Response::json($response_data);
     }
 
     public function datagrid()

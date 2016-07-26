@@ -4,10 +4,15 @@ namespace Zephia\ZLeader\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
+use Illuminate\Console\Scheduling\Schedule;
 
 class ZLeaderServiceProvider extends ServiceProvider
 {
     protected $packageName = 'ZLeader';
+
+    protected $commands = [
+        'Zephia\ZLeader\Console\Commands\ReleaseLeadQueue',
+    ];
 
     /**
      * Bootstrap the application services.
@@ -42,7 +47,12 @@ class ZLeaderServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../../database/migrations' => database_path('migrations'),
-        ], 'migrations');        
+        ], 'migrations');
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command('autocity:release-queue')->everyMinute();
+        });
     }
 
     /**
@@ -52,8 +62,6 @@ class ZLeaderServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //require_once __DIR__ . '/../../vendor/autoload.php';
-
         $this->mergeConfigFrom(__DIR__.'/../../config/zleader.php', $this->packageName);
         $this->mergeConfigFrom(__DIR__.'/../../config/crude.php', 'crude');
         $this->mergeConfigFrom(__DIR__.'/../../config/sluggable.php', 'sluggable');
@@ -61,6 +69,12 @@ class ZLeaderServiceProvider extends ServiceProvider
 
         $this->registerProviders();
         $this->registerAliases();
+        $this->registerCommands();
+    }
+
+    protected function registerCommands()
+    {
+        $this->commands($this->commands);
     }
 
     public function setupRoutes(Router $router)

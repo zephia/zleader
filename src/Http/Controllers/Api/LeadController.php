@@ -82,40 +82,4 @@ class LeadController extends Controller
 
         return Redirect::to($form->feedback_url);
     }
-
-    public function releaseNotificationQueue(Request $request)
-    {
-        $notification_queue = Lead::where('notify','=',1)->get();
-
-        foreach ($notification_queue as $lead) {
-            if(!empty($lead->form->notification_emails) && !empty($lead->form->notification_subject)) {
-                $emails = explode(',', $lead->form->notification_emails);
-
-                if(is_array($emails)) {
-                    // Internal e-mail notification
-                    Mail::send('ZLeader::lead.email-internal-notification', ['lead' => $lead], function ($message) use ($emails, $lead) {
-                        $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
-                        $message->subject($lead->form->notification_subject);
-                        //$message->replyTo($address);
-                        foreach($emails as $email) {
-                            $message->to($email);
-                        }
-                    });
-                }
-            }
-
-            // User e-mail notification
-            $email = $lead->getValueByKey('email');
-            if(!empty($email ) && !empty($lead->form->user_notification_subject)) {
-                Mail::send('ZLeader::lead.email-user-notification', ['lead' => $lead], function ($message) use ($email, $lead) {
-                    $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
-                    $message->subject($lead->form->user_notification_subject);
-                    $message->to($email);
-                });
-            }
-
-            //$lead->notify = 0;
-            $lead->save();
-        }
-    }
 }
