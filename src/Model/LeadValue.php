@@ -8,7 +8,7 @@ class LeadValue extends Eloquent {
 
     protected $table = 'zleader_leads_values';
     protected $hidden = ['id', 'created_at', 'updated_at', 'lead_id', 'field'];
-    protected $appends = ['label'];
+    protected $appends = ['label', 'order'];
 
     public function lead()
     {
@@ -17,11 +17,16 @@ class LeadValue extends Eloquent {
 
     public function field()
     {
-        return $this->belongsTo('Zephia\ZLeader\Model\Field', 'key', 'key');
+        return $this->belongsTo('Zephia\ZLeader\Model\Field', 'key', 'key')->orderBy('order');
     }
 
-     public function getLabelAttribute()
+    public function getLabelAttribute()
     {
         return $this->field->name;
+    }
+
+    public function getOrderAttribute()
+    {
+        return $this->field->order;
     }
 }

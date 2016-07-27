@@ -80,6 +80,10 @@ class LeadController extends Controller
 
         DB::commit();
 
-        return Redirect::to($form->feedback_url);
+        if($request->noredirect) {
+            return;
+        } else {
+            return Redirect::to($form->feedback_url);
+        }
     }
 }

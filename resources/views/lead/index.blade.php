@@ -60,6 +60,11 @@ $(function()
                         $('#leadShow').modal('show');
                     });
                     addLeadField('Fecha', lead.created_at);
+                    addLeadField('Empresa', lead.company_name);
+                    addLeadField('Área', lead.area_name);
+                    addLeadField('Formulario', lead.form_name);
+                    addLeadField('Empresa', lead.company_name);
+                    addLeadField('Dispositivo', lead.remote_platform);
                     addLeadField('UTM Source', lead.utm_source);
                     addLeadField('UTM Campaign', lead.utm_campaign);
                     addLeadField('UTM medium', lead.utm_medium);
