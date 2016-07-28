@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'notification_sender_email_address' => 'webmaster@microwebsites.com.ar',
+    'notification_sender_email_address' => env('ZLEADER_DEFAULT_SENDER_EMAIL=website@autocity.com.ar','website@autocity.com.ar'),
 
     /*
     |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
+    | Autoloaded Service Providers/
     |--------------------------------------------------------------------------
     |
     | The service providers listed here will be automatically loaded on the

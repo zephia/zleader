@@ -52,15 +52,17 @@ class ReleaseLeadQueue extends Command
                         $message->subject($lead->form->notification_subject);
                         //$message->replyTo($address);
                         foreach($emails as $email) {
-                            $message->to($email);
+                            if(!empty(trim($email))) {
+                                $message->to(trim($email));
+                            }
                         }
                     });
                 }
             }
 
             // User e-mail notification
-            $email = $lead->getValueByKey('email');
-            if(!empty($email ) && !empty($lead->form->user_notification_subject)) {
+            $email = trim($lead->getValueByKey('email'));
+            if(!empty($email) && !empty($lead->form->user_notification_subject)) {
                 Mail::send('ZLeader::lead.email-user-notification', ['lead' => $lead], function ($message) use ($email, $lead) {
                     $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
                     $message->subject($lead->form->user_notification_subject);

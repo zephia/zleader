@@ -5,6 +5,7 @@ namespace Zephia\ZLeader\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Blade;
 
 class ZLeaderServiceProvider extends ServiceProvider
 {

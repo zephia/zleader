@@ -8,6 +8,7 @@ use Illuminate\Exception;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Zephia\ZLeader\Model\Form;
 use Zephia\ZLeader\Model\Lead;
 use Zephia\ZLeader\Model\LeadValue;
@@ -59,11 +60,26 @@ class LeadController extends Controller
                 $prefix = array_shift($result_array);
                 $key = implode('_', $result_array);
                 if($prefix == 'zlfield') {
-                    $leadValue = new LeadValue;
-                    $leadValue->lead_id = $lead->id;
-                    $leadValue->key = $key;
-                    $leadValue->value = $value;
-                    $leadValue->save();
+                    if($key == 'email') {
+                        $validator = Validator::make([
+                            'email' => $value
+                        ], [
+                            'email' => 'email'
+                        ]);
+                        if(!$validator->fails()){
+                            $leadValue = new LeadValue;
+                            $leadValue->lead_id = $lead->id;
+                            $leadValue->key = $key;
+                            $leadValue->value = $value;
+                            $leadValue->save();
+                        }
+                    } else {
+                        $leadValue = new LeadValue;
+                        $leadValue->lead_id = $lead->id;
+                        $leadValue->key = $key;
+                        $leadValue->value = $value;
+                        $leadValue->save();
+                    }
                 }
             }
 
@@ -80,7 +96,7 @@ class LeadController extends Controller
 
         DB::commit();
 
-        if($request->noredirect) {
+        if(empty($form->feedback_url)) {
             return;
         } else {
             return Redirect::to($form->feedback_url);

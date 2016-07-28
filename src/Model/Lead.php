@@ -9,7 +9,6 @@ use Zephia\ZLeader\Model\LeadValue;
 class Lead extends Eloquent
 {
     protected $table = 'zleader_leads';
-    protected $appends = ['remote_platform'];
 
     public function values()
     {
@@ -31,20 +30,24 @@ class Lead extends Eloquent
         return $this->belongsTo('Zephia\ZLeader\Model\Form');
     }
 
-    public function getRemotePlatformAttribute($value)
+    public function setUserAgentAttribute($value)
     {
         $agent = new Agent();
 
         $agent->setUserAgent($value);
 
         if($agent->isDesktop()) {
-            return 'Desktop';
+            $platform = 'Desktop';
         } elseif($agent->isMobile()) {
             if($agent->isTablet()) {
-                return 'Tablet';
+                $platform = 'Tablet';
             } else {
-                return 'Mobile';
+                $platform = 'Mobile';
             }
         }
+
+        $this->attributes['remote_platform'] = $platform;
+
+        $this->attributes['user_agent'] = $value;
     }
 }

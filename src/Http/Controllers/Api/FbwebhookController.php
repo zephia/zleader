@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use SammyK\LaravelFacebookSdk\FacebookFacade as Facebook;
 use Zephia\ZLeader\Model\Form;
 use Zephia\ZLeader\Model\Lead;
@@ -16,7 +17,7 @@ class FbwebhookController extends Controller
     public function store(Request $request)
     {
         $access_token = env('FACEBOOK_LEADGEN_ACCESS_TOKEN', 'token');
-        
+
         Log::info('New Webhook:');
 
         if(is_array($request->entry)) {
@@ -100,27 +101,45 @@ class FbwebhookController extends Controller
                             $lead->save();
 
                             foreach($leadgen['lead_values'] as $field) {
-                                $leadValue = new LeadValue;
-                                $leadValue->lead_id = $lead->id;
-                                $leadValue->key = $field['name'];
-                                $leadValue->value = $field['values'][0];
-                                $leadValue->save();
+                                if($field['name'] == 'email') {
+                                    $validator = Validator::make([
+                                        'email' => $field['values'][0]
+                                    ], [
+                                        'email' => 'email'
+                                    ]);
+                                    if(!$validator->fails()){
+                                        $leadValue = new LeadValue;
+                                        $leadValue->lead_id = $lead->id;
+                                        $leadValue->key = $field['name'];
+                                        $leadValue->value = $field['values'][0];
+                                        $leadValue->save();
+                                    }
+                                } else {
+                                    $leadValue = new LeadValue;
+                                    $leadValue->lead_id = $lead->id;
+                                    $leadValue->key = $field['name'];
+                                    $leadValue->value = $field['values'][0];
+                                    $leadValue->save();
+                                }
                             }
 
                             $form_name_fields = explode(',', implode(' ', $form_name_exploded));
                             if(is_array($form_name_fields)) {
                                 foreach($form_name_fields as $fields) {
                                     $field_data = explode('=', $fields);
-                                    if(!empty(trim($field_data[0])) && !empty(trim($field_data[1]))) {
+
+                                    if(isset($field_data[0]) && isset($field_data[1])) {
                                         $data_key = trim($field_data[0]);
                                         $aux = explode(' ', $field_data[1]);
                                         $data_value = trim(array_shift($aux));
 
-                                        $leadValue = new LeadValue;
-                                        $leadValue->lead_id = $lead->id;
-                                        $leadValue->key = $data_key;
-                                        $leadValue->value = $data_value;
-                                        $leadValue->save();
+                                        if(!empty($data_key) && !empty($data_value)) {
+                                            $leadValue = new LeadValue;
+                                            $leadValue->lead_id = $lead->id;
+                                            $leadValue->key = $data_key;
+                                            $leadValue->value = $data_value;
+                                            $leadValue->save();
+                                        }
                                     }
                                 }
                             }
