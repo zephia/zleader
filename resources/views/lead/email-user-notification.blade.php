@@ -287,7 +287,7 @@ float:none!important;
 	<tr>
 		<td></td>
 		<td class="header container"><div class="content">
-				<table bgcolor="#999999">
+				<table bgcolor="#999999" width="100%">
 					<tr>
 						<td><img src="{{ $lead->form->area->company->image }}" width="200"/></td>
 						<td align="right"><h6 class="collapse">{{ $lead->form->area->name }}</h6></td>
@@ -310,7 +310,7 @@ float:none!important;
 								<tr>
 									<td><table align="left" class="column">
 											<tr>
-												<td><h5 class="">Connecta con nosotros:</h5>
+												<td><h5 class="">Conecta con nosotros:</h5>
 													<p class="">
 													@if(!empty($lead->form->area->company->facebook_url))
 														<a href="{{ $lead->form->area->company->facebook_url }}" class="soc-btn fb">Facebook</a> 

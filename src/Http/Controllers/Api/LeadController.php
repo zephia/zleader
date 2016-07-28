@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Response;
 use Zephia\ZLeader\Model\Form;
 use Zephia\ZLeader\Model\Lead;
 use Zephia\ZLeader\Model\LeadValue;
@@ -96,7 +97,13 @@ class LeadController extends Controller
 
         DB::commit();
 
-        if(empty($form->feedback_url)) {
+        if(!empty($request->wpcf7)) {
+            return Response::json([
+                'mailSent' => true, 
+                'captcha' => null, 
+                'message' => 'Su mensaje se ha enviado con éxito. Muchas gracias.', 
+            ]);
+        } else if(empty($form->feedback_url)) {
             return;
         } else {
             return Redirect::to($form->feedback_url);

@@ -269,30 +269,105 @@ $(function() {
 @stop
 
 @section('content')
-<div class="row">
-    
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Reportes totales</a></li>
+        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">Reportes históricos</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <form class="form-inline">
+                <div class="form-group">
+                    <label>Filtrar por empresa:</label>
+                    <select class="form-control">
+                        <option>-- seleccione empresa --</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-default">Filtrar</button>
+            </form>
+            <h4>Por Empresa</h4>
+            <div class="row">
+                @foreach($companies_count as $company_count)
+                <div class="col-md-4">
+                    <!-- Widget: user widget style 1 -->
+                    <div class="box box-widget widget-company-count widget-user-2">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-{{ $colors[$company_count->index] }}">
+                            <div class="widget-user-image">
+                                <img class="img-circle" src="{{ $company_count->image }}" alt="User Avatar">
+                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">{{ $company_count->count }}</h3>
+                            <h5 class="widget-user-desc">{{ $company_count->name }}</h5>
+                        </div>
+                        <div class="box-footer no-padding">
+                            <ul class="nav nav-stacked">
+                            @if(!empty($company_count->areas))
+                                @foreach($company_count->areas as $area)
+                                <li><a href="#">{{ $area->name }} <span class="pull-right badge bg-{{ $colors[$area->index] }}">{{ $area->count }}</span></a></li>
+                                @endforeach
+                            @endif
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /.widget-user -->
+                </div>
+                @endforeach
+            </div>
+            <h4>Por dispositivo</h4>
+            <div class="row">
+                <div class="col-md-4">
+                    <!-- small box -->
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                            <h3>{{ $platforms_count['Mobile'] }}</h3>
+                            <p>Mobile</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-mobile"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <!-- small box -->
+                    <div class="small-box bg-aqua">
+                        <div class="inner">
+                            <h3>{{ $platforms_count['Tablet'] }}</h3>
+                            <p>Tablet</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-tablet"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <!-- small box -->
+                    <div class="small-box bg-yellow">
+                        <div class="inner">
+                            <h3>{{ $platforms_count['Desktop'] }}</h3>
+                            <p>Desktop</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-desktop"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h4>Por empresa</h4>
+            <div class="chart">
+                <canvas id="barChart" style="height:230px"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab_2">
+            The European languages are members of the same family. Their separate existence is a myth. For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ in their grammar, their pronunciation and their most common words. Everyone realizes why a new common language would be desirable: one could refuse to pay expensive translators. To achieve this, it would be necessary to have uniform grammar, pronunciation and more common words. If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages.
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col-md-12">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Reporte mensual</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-wrench"></i></button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </div>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
+                <h3 class="box-title">Reporte histórico por área</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -318,11 +393,6 @@ $(function() {
         <div class="box box-default">
             <div class="box-header with-border">
                 <h3 class="box-title">Leads por medio</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -353,11 +423,6 @@ $(function() {
         <div class="box box-default">
             <div class="box-header with-border">
                 <h3 class="box-title">Leads por fuente</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -383,95 +448,5 @@ $(function() {
         </div>
         <!-- /.box -->
     </div>
-</div>
-<h2 class="page-header">Leads por dispositivo</h2>
-<div class="row">
-    <div class="col-md-4">
-        <!-- small box -->
-        <div class="small-box bg-green">
-            <div class="inner">
-                <h3>{{ $platforms_count['Mobile'] }}</h3>
-                <p>Mobile</p>
-            </div>
-            <div class="icon">
-                <i class="fa fa-mobile"></i>
-            </div>
-            
-        </div>
-    </div>
-    <div class="col-md-4">
-        <!-- small box -->
-        <div class="small-box bg-aqua">
-            <div class="inner">
-                <h3>{{ $platforms_count['Tablet'] }}</h3>
-                <p>Tablet</p>
-            </div>
-            <div class="icon">
-                <i class="fa fa-tablet"></i>
-            </div>
-            
-        </div>
-    </div>
-    <div class="col-md-4">
-        <!-- small box -->
-        <div class="small-box bg-yellow">
-            <div class="inner">
-                <h3>{{ $platforms_count['Desktop'] }}</h3>
-                <p>Desktop</p>
-            </div>
-            <div class="icon">
-                <i class="fa fa-desktop"></i>
-            </div>
-            
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
-       <!-- BAR CHART -->
-        <div class="box box-success">
-            <div class="box-header with-border">
-                <h3 class="box-title">Bar Chart</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
-            </div>
-            <div class="box-body">
-                <div class="chart">
-                    <canvas id="barChart" style="height:230px"></canvas>
-                </div>
-            </div>
-            <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
-    </div>
-    @foreach($companies_count as $company_count)
-    <div class="col-md-3">
-        <!-- Widget: user widget style 1 -->
-        <div class="box box-widget widget-user-2">
-            <!-- Add the bg color to the header using any of the bg-* classes -->
-            <div class="widget-user-header bg-{{ $colors[$company_count->index] }}">
-                <div class="widget-user-image">
-                    <img class="img-circle" src="{{ $company_count->image }}" alt="User Avatar">
-                </div>
-                <!-- /.widget-user-image -->
-                <h3 class="widget-user-username">{{ $company_count->count }}</h3>
-                <h5 class="widget-user-desc">{{ $company_count->name }}</h5>
-            </div>
-            <div class="box-footer no-padding">
-                <ul class="nav nav-stacked">
-                @if(!empty($company_count->areas))
-                    @foreach($company_count->areas as $area)
-                    <li><a href="#">{{ $area->name }} <span class="pull-right badge bg-{{ $colors[$area->index] }}">{{ $area->count }}</span></a></li>
-                    @endforeach
-                @endif
-                </ul>
-            </div>
-        </div>
-        <!-- /.widget-user -->
-    </div>
-    @endforeach
 </div>
 @stop

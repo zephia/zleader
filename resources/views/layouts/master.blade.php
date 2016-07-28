@@ -73,6 +73,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     .table-leads tr{
       cursor: pointer;
     }
+    .widget-user-2 .widget-user-image>img{
+      border-radius: 0;
+    }
+    .widget-company-count{
+      min-height: 266px;
+    }
   </style>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
