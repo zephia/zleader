@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Exception;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Response;
 use Zephia\ZLeader\Model\Form;
@@ -81,12 +80,6 @@ class LeadController extends Controller
                         $leadValue->value = $value;
                         $leadValue->save();
                     }
-                }
-            }
-
-            if ($lead) {
-                if (!empty($form->integration) && !empty($form->integration_id)) {
-                    $integration = new $form->integration->class($lead->id);
                 }
             }
         }

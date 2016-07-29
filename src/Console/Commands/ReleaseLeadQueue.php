@@ -42,6 +42,13 @@ class ReleaseLeadQueue extends Command
         $notification_queue = Lead::where('notify','=',1)->get();
 
         foreach ($notification_queue as $lead) {
+
+            if($lead) {
+                if (!empty($lead->form->integration) && !empty($lead->form->integration_id)) {
+                    $integration = new $lead->form->integration->class($lead->id);
+                }
+            }
+
             if(!empty($lead->form->notification_emails) && !empty($lead->form->notification_subject)) {
                 $emails = explode(',', $lead->form->notification_emails);
 
