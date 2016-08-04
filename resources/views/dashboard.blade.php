@@ -2,6 +2,9 @@
 
 @section('page_header', 'Dashboard')
 
+@section('styles')
+
+<link rel="stylesheet" href="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
 @section('scripts')
 <!-- jQuery 2.2.3 -->
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
@@ -9,8 +12,29 @@
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/bootstrap/js/bootstrap.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/js/app.min.js') }}"></script>
-
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/chartjs/Chart.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+<script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
+<script type="text/javascript">
+    //Date range as a button
+    $('#daterange-btn').daterangepicker(
+        {
+          ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          },
+          startDate: moment().subtract(29, 'days'),
+          endDate: moment()
+        },
+        function (start, end) {
+          $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+    );
+</script>
 <script type="text/javascript">
 $(function() {
 
@@ -282,6 +306,17 @@ $(function() {
                     <select class="form-control">
                         <option>-- seleccione empresa --</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Date range button:</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                            <span>
+                                <i class="fa fa-calendar"></i> Date range picker
+                            </span>
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-default">Filtrar</button>
             </form>

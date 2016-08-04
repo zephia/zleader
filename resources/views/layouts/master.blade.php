@@ -51,7 +51,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
        z-index: 99;
        left:50%;
        top: 50%;
-       display:none;
+       display: none;
+    }
+    .loader.loader-active{
+       display: block !important;
     }
     .loader span{
       left:50%;
@@ -79,6 +82,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     .widget-company-count{
       min-height: 266px;
     }
+    .small-box .icon{
+      top: 10px;
+    }
   </style>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -88,26 +94,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
-<!--
-BODY TAG OPTIONS:
-=================
-Apply one or more of the following classes to get the
-desired effect
-|---------------------------------------------------------|
-| SKINS         | skin-blue                               |
-|               | skin-black                              |
-|               | skin-purple                             |
-|               | skin-yellow                             |
-|               | skin-red                                |
-|               | skin-green                              |
-|---------------------------------------------------------|
-|LAYOUT OPTIONS | fixed                                   |
-|               | layout-boxed                            |
-|               | layout-top-nav                          |
-|               | sidebar-collapse                        |
-|               | sidebar-mini                            |
-|---------------------------------------------------------|
--->
 <body class="hold-transition skin-red sidebar-mini">
 <div class="wrapper">
 
@@ -136,19 +122,22 @@ desired effect
 
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-
+      @if($app_bindings = app()->getBindings() && empty($app_bindings['user']))
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
+          <img src="{{ app('user')->avatar_url }}" class="img-circle" height="160" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>John Doe</p>
+          <p>{{ app('user')->first_name . ' ' . app('user')->last_name }}</p>
           <!-- Status -->
-          <a href="#">Administrador</a>
+          <a href="#">{{ app('user')->roles[0]->name }}</a>
+        </div>
+        <div class="pull-right text-right">
+          <a href="/logout" title="Cerrar sesión"><i class="fa fa-sign-out"></i></a>
         </div>
       </div>
-
+      @endif
       @include('ZLeader::layouts.menu')
     </section>
     <!-- /.sidebar -->
@@ -182,14 +171,6 @@ desired effect
     <strong>Copyright &copy; {{ date("Y", time()) }} <a href="#">Autocity</a>.</strong> All rights reserved.
   </footer>
 </div>
-<!-- ./wrapper -->
-
-<!-- REQUIRED JS SCRIPTS -->
 @yield('scripts')
-
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-     Both of these plugins are recommended to enhance the
-     user experience. Slimscroll is required when using the
-     fixed layout. -->
 </body>
 </html>

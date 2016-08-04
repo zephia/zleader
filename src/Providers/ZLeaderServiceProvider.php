@@ -35,11 +35,11 @@ class ZLeaderServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../../resources/assets' => public_path('vendor/' . $this->packageName . '/assets'),
-            __DIR__.'/../../vendor/cartalyst/data-grid/public/js' => public_path('vendor/' . $this->packageName . '/cartalyst/data-grid/js'),
-            __DIR__.'/../../vendor/almasaeed2010/adminlte/dist' => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/dist'),
-            __DIR__.'/../../vendor/almasaeed2010/adminlte/plugins' => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/plugins'),
-            __DIR__.'/../../vendor/almasaeed2010/adminlte/bootstrap' => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/bootstrap'),
-            __DIR__.'/../../vendor/jan-dolata/crude-crud/src/public' => public_path('vendor/jan-dolata/crude-crud'),
+            base_path('vendor/cartalyst/data-grid/public/js') => public_path('vendor/' . $this->packageName . '/cartalyst/data-grid/js'),
+            base_path('vendor/almasaeed2010/adminlte/dist') => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/dist'),
+            base_path('vendor/almasaeed2010/adminlte/plugins') => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/plugins'),
+            base_path('vendor/almasaeed2010/adminlte/bootstrap') => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/bootstrap'),
+            base_path('vendor/jan-dolata/crude-crud/src/public') => public_path('vendor/jan-dolata/crude-crud'),
         ], 'assets');
 
         $this->publishes([

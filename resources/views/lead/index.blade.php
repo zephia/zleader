@@ -26,12 +26,14 @@ Leads - @parent
 <script>
 $(function()
 {
-     var xhr_lead;
+    var xhr_lead;
     // Setup DataGrid
     var grid = $.datagrid('standard', '.table', '#pagination', '.applied-filters',
     {
         throttle: 25,
         loader: '.loader',
+        loader_class: 'loader-active',
+        dateFormatAttribute: 'd/m// H:i:s',
         callback: function(obj)
         {
             // Select the correct value on the per page dropdown
@@ -42,7 +44,7 @@ $(function()
             $('.table tbody tr').on('click', function(event){
                 event.preventDefault();
 
-                $('.loader').fadeIn();
+                $('.loader').addClass(obj.opt.loader_class);
 
                 try { 
                     xhr_lead.abort();
@@ -55,6 +57,7 @@ $(function()
                 })
                 .done(function( lead ) {
                     $('#leadShow .modal-body').empty();
+                    addLeadField('Id', lead.id);
                     $.each(lead.values, function(index, value){
                         addLeadField(value.label, value.value);
                         $('#leadShow').modal('show');
@@ -63,7 +66,6 @@ $(function()
                     addLeadField('Empresa', lead.company_name);
                     addLeadField('Área', lead.area_name);
                     addLeadField('Formulario', lead.form_name);
-                    addLeadField('Empresa', lead.company_name);
                     addLeadField('Dispositivo', lead.remote_platform);
                     addLeadField('UTM Source', lead.utm_source);
                     addLeadField('UTM Campaign', lead.utm_campaign);
@@ -73,7 +75,7 @@ $(function()
                     addLeadField('URL', lead.referer);
                     addLeadField('IP', lead.remote_ip);
 
-                    $('.loader').fadeOut();
+                    $('.loader').removeClass(obj.opt.loader_class);
                 });
 
                 return false;
@@ -215,7 +217,7 @@ $(function()
 <div class="row">
     <div class="col-lg-12">
         <div class="box">
-            <div class="box-body text-center">
+            <div class="box-body">
                 <div class="applied-filters" data-grid="standard"></div>
             </div>
         </div>

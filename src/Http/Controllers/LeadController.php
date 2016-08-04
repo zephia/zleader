@@ -42,7 +42,23 @@ class LeadController extends Controller
 
     public function datagrid()
     {
-        $leads = Lead::all();
+        $lead_model = Lead::query();
+
+        $app_bindings = app()->getBindings();
+
+        if (isset($app_bindings['user'])) {
+            $company_id = app('user')->company_id;
+            if (app('user')->inRole(app('users_role'))) {
+                $lead_model->whereHas('form', function($query) use ($company_id) {
+                    return $query->whereHas('area', function($query) use ($company_id) {
+                        return $query
+                            ->where('company_id', '=', $company_id);
+                    });
+                });
+            }
+        }
+
+        $leads = $lead_model->get();
 
         $data = [];
         $keys = [];
@@ -87,6 +103,10 @@ class LeadController extends Controller
 
         //dd($data);
 
-        return DataGrid::make($data, $keys, ['sort' => 'date', 'direction' => 'desc']);
+        return DataGrid::make($data, $keys, [
+                'sort' => 'id', 
+                'direction' => 'desc', 
+                'csv_delimiter' => ';',
+            ]);
     }
 }

@@ -90,7 +90,9 @@ class FbwebhookController extends Controller
 
                             $lead->utm_source = 'facebook';
 
-                            $lead->utm_medium = 'leadgen';
+                            $lead->utm_medium = 'cpc';
+
+                            $lead->utm_content = 'leadgen';
 
                             if(!empty($leadgen['ad_name']))
                                 $lead->utm_term = $leadgen['ad_name'];
