@@ -12,6 +12,7 @@
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/bootstrap/js/bootstrap.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/js/app.min.js') }}"></script>
+
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/chartjs/Chart.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
@@ -184,7 +185,7 @@ $(function() {
         var pieChartCanvas = $("#pieChart2").get(0).getContext("2d");
         var pieChart = new Chart(pieChartCanvas);
         var PieData = [
-        @foreach($leads_medium as $data)
+        @foreach($leads_source as $data)
             {
                 value: {{ $data->total }},
                 label: '{{ $data->name }}'
@@ -300,26 +301,31 @@ $(function() {
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label>Filtrar por empresa:</label>
-                    <select class="form-control">
-                        <option>-- seleccione empresa --</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Date range button:</label>
-                    <div class="input-group">
-                        <button type="button" class="btn btn-default pull-right" id="daterange-btn">
-                            <span>
-                                <i class="fa fa-calendar"></i> Date range picker
-                            </span>
-                            <i class="fa fa-caret-down"></i>
-                        </button>
+            @if(count($companies_data) > 1)
+                <form class="form-inline" method="get">
+                    <div class="form-group">
+                        <label>Filtrar por empresa:</label>
+                        <select class="form-control" name="company_id">
+                            <option>-- seleccione empresa --</option>
+                            @foreach($companies_data as $company)
+                                <option value="{{ $company->id }}">{{ $company->name }} </option>
+                            @endforeach
+                        </select>
                     </div>
-                </div>
-                <button type="submit" class="btn btn-default">Filtrar</button>
-            </form>
+					<div class="form-group">
+                        <label>Date range button:</label>
+                        <div class="input-group">
+                            <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                                <span>
+                                    <i class="fa fa-calendar"></i> Date range picker
+                                </span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-default">Filtrar</button>
+                </form>
+            @endif
             <h4>Por Empresa</h4>
             <div class="row">
                 @foreach($companies_count as $company_count)
@@ -399,29 +405,31 @@ $(function() {
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Reporte histórico por área</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="chart">
-                            <!-- Sales Chart Canvas -->
-                            <canvas id="salesChart" style="height: 180px;"></canvas>
-                        </div>
-                        <!-- /.chart-responsive -->
-                    </div>
-                    <!-- /.col -->
+    @if(isset($company_id))
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Reporte histórico por área</h3>
                 </div>
-                <!-- /.row -->
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="chart">
+                                <!-- Sales Chart Canvas -->
+                                <canvas id="salesChart" style="height: 180px;"></canvas>
+                            </div>
+                            <!-- /.chart-responsive -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- ./box-body -->
             </div>
-            <!-- ./box-body -->
+            <!-- /.box -->
         </div>
-        <!-- /.box -->
-    </div>
+    @endif
     <!-- /.col -->
     <div class="col-md-6">
         <!-- /.info-box -->
@@ -442,7 +450,7 @@ $(function() {
                     <div class="col-md-4">
                         <ul class="chart-legend clearfix">
                         @foreach($leads_medium as $data)
-                            <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }}</li>
+                            <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }} ({{ $data->total }})</li>
                         @endforeach
                         </ul>
                     </div>
@@ -472,7 +480,7 @@ $(function() {
                     <div class="col-md-4">
                         <ul class="chart-legend clearfix">
                         @foreach($leads_source as $data)
-                            <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }}</li>
+                            <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }} ({{ $data->total }})</li>
                         @endforeach
                         </ul>
                     </div>

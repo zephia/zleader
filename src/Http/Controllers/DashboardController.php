@@ -60,49 +60,62 @@ class DashboardController extends Controller
 
         $area_data = [];
 
-        if ($request->has('company_id')) {
-            if ($request->company_id) {
-                $area_data = [];
-                $company = Company::find($request->company_id);
-
-                $months = DB::table('zleader_leads')
-                    ->select(
-                        'zleader_leads.created_at',
-                        DB::raw('MONTH(zleader_leads.created_at) as month'),
-                        DB::raw('YEAR(zleader_leads.created_at) as year')
-                    )
-                    ->groupBy('year','month')
-                    ->get();
-
-                foreach ($company->areas as $area) {
-                    $months_formated = [];
-                    foreach($months as $month) {
-                        $months_data = DB::table('zleader_leads')
-                            ->leftJoin('zleader_forms', 'zleader_leads.form_id', '=', 'zleader_forms.id')
-                            ->select(
-                                DB::raw('COUNT(*) as total')
-                            )
-                            ->where('zleader_forms.area_id','=',$area->id)
-                            ->where(DB::raw("MONTH(zleader_leads.created_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
-                            ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"))
-                            ->first();
-                        $formated_month = Carbon::parse($month->created_at)->formatLocalized('%B');
-                        $months_formated[] = [
-                            'month' => $formated_month,
-                            'total' => $months_data->total,
-                        ];
-                    }
-
-                    $area_data[] = [
-                        'area_name' => $area->name,
-                        'months'    => $months_formated,
-                    ];
+        $app_bindings = app()->getBindings();
+        if (isset($app_bindings['user'])) {
+            if (app('user')->inRole(app('users_role'))) {
+                $company_id = app('user')->company_id;
+            } elseif(app('user')->inRole(app('admins_role'))) {
+                if ($request->has('company_id')) {
+                    $company_id = $request->company_id;
                 }
             }
         }
 
+        if (isset($company_id)) {
+            $area_data = [];
+            $company = Company::find($company_id);
+
+            $months = DB::table('zleader_leads')
+                ->select(
+                    'zleader_leads.created_at',
+                    DB::raw('MONTH(zleader_leads.created_at) as month'),
+                    DB::raw('YEAR(zleader_leads.created_at) as year')
+                )
+                ->groupBy('year','month')
+                ->get();
+
+            foreach ($company->areas as $area) {
+                $months_formated = [];
+                foreach($months as $month) {
+                    $months_data = DB::table('zleader_leads')
+                        ->leftJoin('zleader_forms', 'zleader_leads.form_id', '=', 'zleader_forms.id')
+                        ->select(
+                            DB::raw('COUNT(*) as total')
+                        )
+                        ->where('zleader_forms.area_id','=',$area->id)
+                        ->where(DB::raw("MONTH(zleader_leads.created_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
+                        ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"))
+                        ->first();
+                    $formated_month = Carbon::parse($month->created_at)->formatLocalized('%B');
+                    $months_formated[] = [
+                        'month' => $formated_month,
+                        'total' => $months_data->total,
+                    ];
+                }
+
+                $area_data[] = [
+                    'area_name' => $area->name,
+                    'months'    => $months_formated,
+                ];
+            }
+        }
+
         // Companies count
-        $companies_data = Company::all();
+        if (isset($company_id)) {
+            $companies_data = Company::where('id', '=', $company_id)->get();
+        } else {
+            $companies_data = Company::all();
+        }
         $lead = new Lead;
         $companies_count = [];
         $company_index = 0;
@@ -157,29 +170,49 @@ class DashboardController extends Controller
         }
 
         // Leads por medium
-        $leads_medium = DB::table('zleader_leads')
+        $leads_data = DB::table('zleader_leads')
             ->select(
                 'utm_medium as name', 
                 DB::raw('count(*) as total')
             )
             ->where('utm_medium','!=','')
-            ->groupBy('utm_medium')
-            ->get();
+            ->groupBy('utm_medium');
+
+        if (isset($company_id)) {
+            $leads_data
+                ->join('zleader_forms', 'zleader_forms.id', '=', 'zleader_leads.form_id')
+                ->join('zleader_areas', 'zleader_areas.id', '=', 'zleader_forms.area_id')
+                ->where('zleader_areas.company_id', '=', $company_id);
+        }
+
+        $leads_medium = $leads_data->get();
 
         // Leads por source
-        $leads_source = DB::table('zleader_leads')
+        $leads_data = DB::table('zleader_leads')
             ->select(
                 'utm_source as name', 
                 DB::raw('count(*) as total'),
                 DB::raw('@curRow := @curRow + 1 AS row_number')
             )
             ->where('utm_source','!=','')
-            ->groupBy('utm_source')
-            ->get();
+            ->groupBy('utm_source');
+
+        if (isset($company_id)) {
+            $leads_data
+                ->join('zleader_forms', 'zleader_forms.id', '=', 'zleader_leads.form_id')
+                ->join('zleader_areas', 'zleader_areas.id', '=', 'zleader_forms.area_id')
+                ->where('zleader_areas.company_id', '=', $company_id);
+        }
+
+        $leads_source = $leads_data->get();
 
         // bar chart
 
-        $companies_data = Company::all();
+        if (isset($company_id)) {
+            $companies_data = Company::where('id', '=', $company_id)->get();
+        } else {
+            $companies_data = Company::all();
+        }
 
         $bar_chart_data = [];
 
@@ -224,7 +257,18 @@ class DashboardController extends Controller
         //dd($bar_chart_data);
 
         // Platforms
-        $leads = Lead::all();
+        $leads_model = Lead::query();
+
+        if (isset($company_id)) {
+            $leads_model->whereHas('form', function($query) use ($company_id) {
+                return $query->whereHas('area', function($query) use ($company_id) {
+                    return $query
+                        ->where('company_id', '=', $company_id);
+                });
+            });
+        }
+
+        $leads = $leads_model->get();
 
         $platforms_count = [
             'Desktop' => 0,
@@ -241,6 +285,7 @@ class DashboardController extends Controller
         //dd($platforms_count);
 
         return view('ZLeader::dashboard', [
+            'companies_data'  => $companies_data,
             'colors'          => $colors,
             'hex_colors'      => $hex_colors,
             'companies_count' => $companies_count,
