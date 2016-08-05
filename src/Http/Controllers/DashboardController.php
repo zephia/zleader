@@ -60,8 +60,7 @@ class DashboardController extends Controller
 
         $area_data = [];
 
-        $app_bindings = app()->getBindings();
-        if (isset($app_bindings['user'])) {
+        if (app('user') !== false) {
             if (app('user')->inRole(app('users_role'))) {
                 $company_id = app('user')->company_id;
             } elseif(app('user')->inRole(app('admins_role'))) {

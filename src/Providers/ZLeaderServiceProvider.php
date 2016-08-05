@@ -20,6 +20,7 @@ class ZLeaderServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../../resources/views', $this->packageName);
         $this->setupRoutes($this->app->router);
+        $this->setupRoutesApi($this->app->router);
 
         $this->publishes([
             __DIR__.'/../../config/zleader.php' => config_path('zleader.php'),
@@ -50,6 +51,13 @@ class ZLeaderServiceProvider extends ServiceProvider
             $schedule = $this->app->make(Schedule::class);
             $schedule->command('autocity:release-queue')->everyMinute();
         });
+
+        $bindings = app()->getBindings();
+        if (empty($bindings['user'])) {
+            app()->bind('user', function () {
+                return false;
+            });
+        }
     }
 
     /**
@@ -86,6 +94,13 @@ class ZLeaderServiceProvider extends ServiceProvider
     {
         $router->group(['namespace' => 'Zephia\ZLeader\Http\Controllers'], function($router) {
             include __DIR__.'/../Http/routes.php';
+        });
+    }
+
+    public function setupRoutesApi(Router $router)
+    {
+        $router->group(['namespace' => 'Zephia\ZLeader\Http\Controllers'], function($router) {
+            include __DIR__.'/../Http/routes_api.php';
         });
     }
 

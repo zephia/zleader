@@ -122,7 +122,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-      @if($app_bindings = app()->getBindings() && empty($app_bindings['user']))
+      @if(app('user') !== false)
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">

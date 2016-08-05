@@ -44,9 +44,7 @@ class LeadController extends Controller
     {
         $lead_model = Lead::query();
 
-        $app_bindings = app()->getBindings();
-
-        if (isset($app_bindings['user'])) {
+        if (app('user') !== false) {
             $company_id = app('user')->company_id;
             if (app('user')->inRole(app('users_role'))) {
                 $lead_model->whereHas('form', function($query) use ($company_id) {
@@ -76,6 +74,7 @@ class LeadController extends Controller
             $row['utm_campaign'] = $lead->utm_campaign;
             $row['utm_content'] = $lead->utm_content;
             $row['utm_term'] = $lead->utm_term;
+            $row['referer'] = $lead->referer;
 
             $keys[] = 'id';
             $keys[] = 'date';
@@ -88,6 +87,7 @@ class LeadController extends Controller
             $keys[] = 'utm_campaign';
             $keys[] = 'utm_content';
             $keys[] = 'utm_term';
+            $keys[] = 'referer';
 
             // inject values
             foreach ($lead->values as $lead_value) {
@@ -104,9 +104,9 @@ class LeadController extends Controller
         //dd($data);
 
         return DataGrid::make($data, $keys, [
-                'sort' => 'id', 
-                'direction' => 'desc', 
-                'csv_delimiter' => ';',
-            ]);
+            'sort' => 'id',
+            'direction' => 'desc',
+            'csv_delimiter' => ';',
+        ]);
     }
 }
