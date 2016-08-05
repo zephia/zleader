@@ -12,7 +12,6 @@
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/bootstrap/js/bootstrap.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/js/app.min.js') }}"></script>
-
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/chartjs/Chart.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
@@ -301,32 +300,32 @@ $(function() {
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            @if(count($companies_data) > 1)
-                <form class="form-inline" method="get">
-                    <div class="form-group">
-                        <label>Filtrar por empresa:</label>
-                        <select class="form-control" name="company_id">
-                            <option>-- seleccione empresa --</option>
-                            @foreach($companies_data as $company)
-                                <option value="{{ $company->id }}">{{ $company->name }} </option>
-                            @endforeach
-                        </select>
+            <form class="form-inline" method="get">
+                @if(count($companies_data) > 1)
+                <div class="form-group">
+                    <label>Filtrar por empresa:</label>
+                    <select class="form-control" name="company_id">
+                        <option>-- seleccione empresa --</option>
+                        @foreach($companies_data as $company)
+                            <option value="{{ $company->id }}">{{ $company->name }} </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+                <div class="form-group">
+                    <label>Date range button:</label>
+                    <div class="input-group">
+                        <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                            <span>
+                                <i class="fa fa-calendar"></i> Date range picker
+                            </span>
+                            <i class="fa fa-caret-down"></i>
+                        </button>
                     </div>
-					<div class="form-group">
-                        <label>Date range button:</label>
-                        <div class="input-group">
-                            <button type="button" class="btn btn-default pull-right" id="daterange-btn">
-                                <span>
-                                    <i class="fa fa-calendar"></i> Date range picker
-                                </span>
-                                <i class="fa fa-caret-down"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-default">Filtrar</button>
-                </form>
-            @endif
-            <h4>Por Empresa</h4>
+                </div>
+                <button type="submit" class="btn btn-default">Filtrar</button>
+            </form>
+            <h4>Por empresa</h4>
             <div class="row">
                 @foreach($companies_count as $company_count)
                 <div class="col-md-4">
@@ -393,103 +392,76 @@ $(function() {
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Leads por medio</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="chart-responsive">
+                                        <canvas id="pieChart" height="150"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <ul class="chart-legend clearfix">
+                                    @foreach($leads_medium as $data)
+                                        <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }} ({{ $data->total }})</li>
+                                    @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Leads por fuente</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="chart-responsive">
+                                        <canvas id="pieChart2" height="150"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <ul class="chart-legend clearfix">
+                                    @foreach($leads_source as $data)
+                                        <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }} ({{ $data->total }})</li>
+                                    @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="tab-pane" id="tab_2">
             <h4>Por empresa</h4>
             <div class="chart">
                 <canvas id="barChart" style="height:230px"></canvas>
             </div>
-        </div>
-        <div class="tab-pane" id="tab_2">
-            The European languages are members of the same family. Their separate existence is a myth. For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ in their grammar, their pronunciation and their most common words. Everyone realizes why a new common language would be desirable: one could refuse to pay expensive translators. To achieve this, it would be necessary to have uniform grammar, pronunciation and more common words. If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages.
-        </div>
-    </div>
-</div>
-<div class="row">
-    @if(isset($company_id))
-        <div class="col-md-12">
+            @if(isset($company_id))
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Reporte histórico por área</h3>
                 </div>
-                <!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="chart">
-                                <!-- Sales Chart Canvas -->
                                 <canvas id="salesChart" style="height: 180px;"></canvas>
                             </div>
-                            <!-- /.chart-responsive -->
                         </div>
-                        <!-- /.col -->
                     </div>
-                    <!-- /.row -->
                 </div>
-                <!-- ./box-body -->
             </div>
-            <!-- /.box -->
+            @endif
         </div>
-    @endif
-    <!-- /.col -->
-    <div class="col-md-6">
-        <!-- /.info-box -->
-        <div class="box box-default">
-            <div class="box-header with-border">
-                <h3 class="box-title">Leads por medio</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="chart-responsive">
-                            <canvas id="pieChart" height="150"></canvas>
-                        </div>
-                        <!-- ./chart-responsive -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <ul class="chart-legend clearfix">
-                        @foreach($leads_medium as $data)
-                            <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }} ({{ $data->total }})</li>
-                        @endforeach
-                        </ul>
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-        </div>
-        <!-- /.box -->
-    </div>
-    <div class="col-md-6">
-        <!-- /.info-box -->
-        <div class="box box-default">
-            <div class="box-header with-border">
-                <h3 class="box-title">Leads por fuente</h3>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="chart-responsive">
-                            <canvas id="pieChart2" height="150"></canvas>
-                        </div>
-                        <!-- ./chart-responsive -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <ul class="chart-legend clearfix">
-                        @foreach($leads_source as $data)
-                            <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }} ({{ $data->total }})</li>
-                        @endforeach
-                        </ul>
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
-        </div>
-        <!-- /.box -->
     </div>
 </div>
 @stop
