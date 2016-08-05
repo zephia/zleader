@@ -19,19 +19,22 @@
     //Date range as a button
     $('#daterange-btn').daterangepicker(
         {
-          ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-          },
-          startDate: moment().subtract(29, 'days'),
-          endDate: moment()
+            ranges: {
+                'Hoy': [moment(), moment()],
+                'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+                'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+                'Este mes': [moment().startOf('month'), moment().endOf('month')],
+                'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Últimos 6 meses': [moment().subtract(6, 'month').startOf('month'), moment().subtract(6, 'month').endOf('month')]
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
         },
         function (start, end) {
-          $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            $('#df').val(start);
+            $('#dt').val(end);
         }
     );
 </script>
@@ -140,7 +143,7 @@ $(function() {
                 value: {{ $data->total }},
                 //color: "#3c8dbc",
                 //highlight: "#3c8dbc",
-                label: '{{ $data->name }}'
+                label: '{{ !empty($data->name) ? $data->name : 'NA' }}'
             },
         @endforeach
         ];
@@ -293,31 +296,42 @@ $(function() {
 @stop
 
 @section('content')
-<form class="form-inline" method="get">
-    @if(count($companies_data) > 1)
-    <div class="form-group">
-        <label>Filtrar por empresa:</label>
-        <select class="form-control" name="company_id">
-            <option>-- seleccione empresa --</option>
-            @foreach($companies_data as $company)
-                <option value="{{ $company->id }}">{{ $company->name }} </option>
-            @endforeach
-        </select>
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">Filtros</h3>
     </div>
-    @endif
-    <div class="form-group">
-        <label>Date range button:</label>
-        <div class="input-group">
-            <button type="button" class="btn btn-default pull-right" id="daterange-btn">
-                <span>
-                    <i class="fa fa-calendar"></i> Date range picker
-                </span>
-                <i class="fa fa-caret-down"></i>
-            </button>
-        </div>
+    <div class="box-body">
+        <form class="form-inline" method="get">
+            @if(app('user') !== false)
+                @if(app('user')->inRole(app('admins_role')))
+                <div class="form-group">
+                    <label>Filtrar por empresa:</label>
+                    <select class="form-control" name="company_id">
+                        <option value="">-- seleccione empresa --</option>
+                        @foreach($companies_data as $company)
+                            <option value="{{ $company->id }}">{{ $company->name }} </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+            @endif
+            <div class="form-group">
+                <label>Rango de fechas:</label>
+                <input type="hidden" name="df" id="df" />
+                <input type="hidden" name="dt" id="dt" />
+                <div class="input-group">
+                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                        <span>
+                            <i class="fa fa-calendar"></i> Elegir rango de fechas
+                        </span>
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-default">Filtrar</button>
+        </form>
     </div>
-    <button type="submit" class="btn btn-default">Filtrar</button>
-</form>
+</div>
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Reportes totales</a></li>
@@ -407,7 +421,7 @@ $(function() {
                                 <div class="col-md-4">
                                     <ul class="chart-legend clearfix">
                                     @foreach($leads_medium as $data)
-                                        <li><i class="fa fa-circle-o text-red"></i> {{ $data->name }} ({{ $data->total }})</li>
+                                        <li><i class="fa fa-circle-o text-red"></i> {{ !empty($data->name) ? $data->name : 'NA' }} ({{ $data->total }})</li>
                                     @endforeach
                                     </ul>
                                 </div>

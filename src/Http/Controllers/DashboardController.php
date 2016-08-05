@@ -72,23 +72,39 @@ class DashboardController extends Controller
             }
         }
 
+        if ($request->has('df')) {
+            $date_from = new Carbon($request->df);
+        }
+        if ($request->has('dt')) {
+            $date_to = new Carbon($request->dt);
+        }
+
         if (isset($company_id)) {
             $area_data = [];
             $company = Company::find($company_id);
 
-            $months = DB::table('zleader_leads')
+            $months_db = DB::table('zleader_leads')
                 ->select(
                     'zleader_leads.created_at',
                     DB::raw('MONTH(zleader_leads.created_at) as month'),
                     DB::raw('YEAR(zleader_leads.created_at) as year')
                 )
-                ->groupBy('year','month')
-                ->get();
+                ->groupBy('year','month');
+
+            if (isset($date_from) && isset($date_to)) {
+                $months_db
+                    ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
+                    ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
+                    ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
+                    ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+            }
+
+            $months = $months_db->get();
 
             foreach ($company->areas as $area) {
                 $months_formated = [];
                 foreach($months as $month) {
-                    $months_data = DB::table('zleader_leads')
+                    $months_db = DB::table('zleader_leads')
                         ->leftJoin('zleader_forms', 'zleader_leads.form_id', '=', 'zleader_forms.id')
                         ->select(
                             DB::raw('COUNT(*) as total')
@@ -97,6 +113,14 @@ class DashboardController extends Controller
                         ->where(DB::raw("MONTH(zleader_leads.created_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
                         ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"))
                         ->first();
+                    if (isset($date_from) && isset($date_to)) {
+                        $months_db
+                            ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
+                            ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
+                            ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
+                            ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+                    }
+                    $months_data = $months_db->first();
                     $formated_month = Carbon::parse($month->created_at)->formatLocalized('%B');
                     $months_formated[] = [
                         'month' => $formated_month,
@@ -176,7 +200,6 @@ class DashboardController extends Controller
                 'utm_medium as name', 
                 DB::raw('count(*) as total')
             )
-            ->where('utm_medium','!=','')
             ->groupBy('utm_medium');
 
         if (isset($company_id)) {
@@ -184,6 +207,14 @@ class DashboardController extends Controller
                 ->join('zleader_forms', 'zleader_forms.id', '=', 'zleader_leads.form_id')
                 ->join('zleader_areas', 'zleader_areas.id', '=', 'zleader_forms.area_id')
                 ->where('zleader_areas.company_id', '=', $company_id);
+        }
+
+        if (isset($date_from) && isset($date_to)) {
+            $leads_data
+                ->whereMonth('created_at', '>=', $date_from->month)
+                ->whereYear('created_at', '>=', $date_from->year)
+                ->whereMonth('created_at', '<=', $date_to->month)
+                ->whereYear('created_at', '<=', $date_to->year);
         }
 
         $leads_medium = $leads_data->get();
@@ -197,6 +228,14 @@ class DashboardController extends Controller
             )
             ->where('utm_source','!=','')
             ->groupBy('utm_source');
+
+        if (isset($date_from) && isset($date_to)) {
+            $leads_data
+                ->whereMonth('created_at', '>=', $date_from->month)
+                ->whereYear('created_at', '>=', $date_from->year)
+                ->whereMonth('created_at', '<=', $date_to->month)
+                ->whereYear('created_at', '<=', $date_to->year);
+        }
 
         if (isset($company_id)) {
             $leads_data
@@ -217,14 +256,23 @@ class DashboardController extends Controller
 
         $bar_chart_data = [];
 
-        $months = DB::table('zleader_leads')
+        $months_db = DB::table('zleader_leads')
             ->select(
                 'zleader_leads.created_at',
                 DB::raw('MONTH(zleader_leads.created_at) as month'),
                 DB::raw('YEAR(zleader_leads.created_at) as year')
             )
-            ->groupBy('year','month')
-            ->get();
+            ->groupBy('year','month');
+
+        if (isset($date_from) && isset($date_to)) {
+            $months_db
+                ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
+                ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
+                ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
+                ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+        }
+
+        $months = $months_db->get();
 
         //dd($months);
 
@@ -232,7 +280,7 @@ class DashboardController extends Controller
 
             $months_formated = [];
             foreach($months as $month) {
-                $months_data = DB::table('zleader_leads')
+                $months_db = DB::table('zleader_leads')
                     ->leftJoin('zleader_forms', 'zleader_leads.form_id', '=', 'zleader_forms.id')
                     ->leftJoin('zleader_areas', 'zleader_forms.area_id', '=', 'zleader_areas.id')
                     ->select(
@@ -240,8 +288,17 @@ class DashboardController extends Controller
                     )
                     ->where('zleader_areas.company_id','=',$company->id)
                     ->where(DB::raw("MONTH(zleader_leads.created_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
-                    ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"))
-                    ->first();
+                    ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"));
+
+                if (isset($date_from) && isset($date_to)) {
+                    $months_db
+                        ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
+                        ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
+                        ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
+                        ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+                }
+
+                $months_data = $months_db->first();
                 $formated_month = Carbon::parse($month->created_at)->formatLocalized('%B');
                 $months_formated[] = [
                     'month' => $formated_month,
