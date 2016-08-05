@@ -3,8 +3,8 @@
 @section('page_header', 'Dashboard')
 
 @section('styles')
-
 <link rel="stylesheet" href="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
+@stop
 @section('scripts')
 <!-- jQuery 2.2.3 -->
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
