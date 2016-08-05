@@ -293,6 +293,31 @@ $(function() {
 @stop
 
 @section('content')
+<form class="form-inline" method="get">
+    @if(count($companies_data) > 1)
+    <div class="form-group">
+        <label>Filtrar por empresa:</label>
+        <select class="form-control" name="company_id">
+            <option>-- seleccione empresa --</option>
+            @foreach($companies_data as $company)
+                <option value="{{ $company->id }}">{{ $company->name }} </option>
+            @endforeach
+        </select>
+    </div>
+    @endif
+    <div class="form-group">
+        <label>Date range button:</label>
+        <div class="input-group">
+            <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                <span>
+                    <i class="fa fa-calendar"></i> Date range picker
+                </span>
+                <i class="fa fa-caret-down"></i>
+            </button>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-default">Filtrar</button>
+</form>
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Reportes totales</a></li>
@@ -300,31 +325,6 @@ $(function() {
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <form class="form-inline" method="get">
-                @if(count($companies_data) > 1)
-                <div class="form-group">
-                    <label>Filtrar por empresa:</label>
-                    <select class="form-control" name="company_id">
-                        <option>-- seleccione empresa --</option>
-                        @foreach($companies_data as $company)
-                            <option value="{{ $company->id }}">{{ $company->name }} </option>
-                        @endforeach
-                    </select>
-                </div>
-                @endif
-                <div class="form-group">
-                    <label>Date range button:</label>
-                    <div class="input-group">
-                        <button type="button" class="btn btn-default pull-right" id="daterange-btn">
-                            <span>
-                                <i class="fa fa-calendar"></i> Date range picker
-                            </span>
-                            <i class="fa fa-caret-down"></i>
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-default">Filtrar</button>
-            </form>
             <h4>Por empresa</h4>
             <div class="row">
                 @foreach($companies_count as $company_count)

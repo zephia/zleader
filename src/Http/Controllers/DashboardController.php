@@ -60,6 +60,8 @@ class DashboardController extends Controller
 
         $area_data = [];
 
+        $company_id = null;
+
         if (app('user') !== false) {
             if (app('user')->inRole(app('users_role'))) {
                 $company_id = app('user')->company_id;
@@ -293,6 +295,7 @@ class DashboardController extends Controller
             'area_data'       => $area_data,
             'bar_chart_data'  => $bar_chart_data,
             'platforms_count' => $platforms_count,
+            'company_id'      => $company_id,
         ]);
     }
 }
