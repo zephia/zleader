@@ -66,6 +66,7 @@ class DashboardController extends Controller
             if (app('user')->inRole(app('users_role'))) {
                 $company_id = app('user')->company_id;
             } elseif(app('user')->inRole(app('admins_role'))) {
+                $companies = Company::all();
                 if ($request->has('company_id')) {
                     $company_id = $request->company_id;
                 }
@@ -93,10 +94,8 @@ class DashboardController extends Controller
 
             if (isset($date_from) && isset($date_to)) {
                 $months_db
-                    ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
-                    ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
-                    ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
-                    ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+                    ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                    ->whereDate('zleader_leads.created_at', '<=', $date_to);
             }
 
             $months = $months_db->get();
@@ -114,10 +113,8 @@ class DashboardController extends Controller
                         ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"));
                     if (isset($date_from) && isset($date_to)) {
                         $months_db
-                            ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
-                            ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
-                            ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
-                            ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+                            ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                            ->whereDate('zleader_leads.created_at', '<=', $date_to);
                     }
                     $months_data = $months_db->first();
                     $formated_month = Carbon::parse($month->created_at)->formatLocalized('%B');
@@ -147,16 +144,17 @@ class DashboardController extends Controller
             $company_item = [];
             $company_item['name'] = $company->name;
             $company_item['image'] = $company->image;
-            $count_result = DB::select('
-                SELECT 
-                    COUNT(*) as lead_count 
-                FROM 
-                    zleader_leads l
-                    JOIN zleader_forms f ON l.form_id = f.id 
-                    JOIN zleader_areas a ON f.area_id = a.id
-                WHERE 
-                    a.company_id = ?
-                ', [$company->id]);
+            $count_data = DB::table('zleader_leads')
+                ->select(DB::raw('count(*) as lead_count'))
+                ->join('zleader_forms', 'zleader_forms.id', '=', 'zleader_leads.form_id')
+                ->join('zleader_areas', 'zleader_areas.id', '=', 'zleader_forms.area_id')
+                ->where('zleader_areas.company_id', '=', $company->id);
+            if (isset($date_from) && isset($date_to)) {
+                $count_data
+                    ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                    ->whereDate('zleader_leads.created_at', '<=', $date_to);
+            }
+            $count_result = $count_data->get();
             $company_item['count'] = count($count_result) > 0 ? $count_result[0]->lead_count : 0;
 
             $areas_count = [];
@@ -164,15 +162,16 @@ class DashboardController extends Controller
             foreach($company->areas as $area) {
                 $areas_item = [];
                 $areas_item['name'] = $area->name;
-                $count_result_area = DB::select('
-                    SELECT 
-                        COUNT(*) as lead_count 
-                    FROM 
-                        zleader_leads l
-                        JOIN zleader_forms f ON l.form_id = f.id 
-                    WHERE 
-                        f.area_id = ?
-                    ', [$area->id]);
+                $count_data_area = DB::table('zleader_leads')
+                    ->select(DB::raw('count(*) as lead_count'))
+                    ->join('zleader_forms', 'zleader_forms.id', '=', 'zleader_leads.form_id')
+                    ->where('zleader_forms.area_id', '=', $area->id);
+                if (isset($date_from) && isset($date_to)) {
+                    $count_data_area
+                        ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                        ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                }
+                $count_result_area = $count_data_area->get();
                 $areas_item['count'] = count($count_result_area) > 0 ? $count_result_area[0]->lead_count : 0;
 
                 $areas_item['index'] = $area_index;
@@ -210,10 +209,8 @@ class DashboardController extends Controller
 
         if (isset($date_from) && isset($date_to)) {
             $leads_data
-                ->whereMonth('created_at', '>=', $date_from->month)
-                ->whereYear('created_at', '>=', $date_from->year)
-                ->whereMonth('created_at', '<=', $date_to->month)
-                ->whereYear('created_at', '<=', $date_to->year);
+                ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                ->whereDate('zleader_leads.created_at', '<=', $date_to);
         }
 
         $leads_medium = $leads_data->get();
@@ -230,10 +227,8 @@ class DashboardController extends Controller
 
         if (isset($date_from) && isset($date_to)) {
             $leads_data
-                ->whereMonth('created_at', '>=', $date_from->month)
-                ->whereYear('created_at', '>=', $date_from->year)
-                ->whereMonth('created_at', '<=', $date_to->month)
-                ->whereYear('created_at', '<=', $date_to->year);
+                ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                ->whereDate('zleader_leads.created_at', '<=', $date_to);
         }
 
         if (isset($company_id)) {
@@ -265,10 +260,8 @@ class DashboardController extends Controller
 
         if (isset($date_from) && isset($date_to)) {
             $months_db
-                ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
-                ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
-                ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
-                ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+                ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                ->whereDate('zleader_leads.created_at', '<=', $date_to);
         }
 
         $months = $months_db->get();
@@ -291,10 +284,8 @@ class DashboardController extends Controller
 
                 if (isset($date_from) && isset($date_to)) {
                     $months_db
-                        ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
-                        ->whereYear('zleader_leads.created_at', '>=', $date_from->year)
-                        ->whereMonth('zleader_leads.created_at', '<=', $date_to->month)
-                        ->whereYear('zleader_leads.created_at', '<=', $date_to->year);
+                        ->whereDate('zleader_leads.created_at', '>=', $date_from)
+                        ->whereDate('zleader_leads.created_at', '<=', $date_to);
                 }
 
                 $months_data = $months_db->first();
@@ -329,19 +320,33 @@ class DashboardController extends Controller
 
         $platforms_count = [
             'Desktop' => 0,
-            'Mobile' => 0,
-            'Tablet' => 0,
+            'Mobile'  => 0,
+            'Tablet'  => 0,
         ];
+        $platforms_data = [
+            'Desktop' => 0,
+            'Mobile'  => 0,
+            'Tablet'  => 0,
+        ];
+        $platforms_total = 0;
 
-        foreach($leads as $lead) {
+        foreach ($leads as $lead) {
             if(!empty($lead->remote_platform)) {
+                $platforms_total ++;
                 $platforms_count[$lead->remote_platform]++;
+            }
+        }
+
+        foreach ($platforms_count as $key => $value) {
+            if ($value !== 0) {
+                $platforms_data[$key] =  $value / $platforms_total * 100;
             }
         }
 
         //dd($platforms_count);
 
         return view('ZLeader::dashboard', [
+            'companies'       => isset($companies) ? $companies : null,
             'companies_data'  => $companies_data,
             'colors'          => $colors,
             'hex_colors'      => $hex_colors,
@@ -350,8 +355,10 @@ class DashboardController extends Controller
             'leads_source'    => $leads_source,
             'area_data'       => $area_data,
             'bar_chart_data'  => $bar_chart_data,
-            'platforms_count' => $platforms_count,
+            'platforms_data'  => $platforms_data,
             'company_id'      => $company_id,
+            'date_from'       => isset($date_from) ? $date_from : null,
+            'date_to'         => isset($date_to) ? $date_to : null,
         ]);
     }
 }

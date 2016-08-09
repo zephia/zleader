@@ -16,32 +16,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
 <script type="text/javascript">
-    //Date range as a button
-    $('#daterange-btn').daterangepicker(
-        {
-            ranges: {
-                'Hoy': [moment(), moment()],
-                'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
-                'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
-                'Este mes': [moment().startOf('month'), moment().endOf('month')],
-                'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                'Últimos 6 meses': [moment().subtract(6, 'month').startOf('month'), moment().subtract(6, 'month').endOf('month')]
-            },
-            startDate: moment().subtract(29, 'days'),
-            endDate: moment()
-        },
-        function (start, end) {
-            $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-            $('#df').val(start);
-            $('#dt').val(end);
-        }
-    );
-</script>
-<script type="text/javascript">
 $(function() {
 
         'use strict';
+
+        /* Date range */
+        $('#daterange-btn').daterangepicker(
+            {
+                autoApply: true,
+                autoUpdateInput: false,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+                    'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+                    'Este mes': [moment().startOf('month'), moment().endOf('month')],
+                    'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Últimos 6 meses': [moment().subtract(6, 'month').startOf('month'), moment().endOf('month')],
+                    'Siempre': [moment().subtract(96, 'month').startOf('month'), moment()]
+                },
+                startDate: moment().subtract(96, 'month').startOf('month'),
+                endDate: moment()
+            },
+            function (start, end) {
+                $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                $('#df').val(start);
+                $('#dt').val(end);
+                $('#form-filters').submit();
+            }
+        );
+
+        $('#company_id').on('change', function(){
+            $('#form-filters').submit();
+        });
+
+
 
         /* ChartJS
          * -------
@@ -143,7 +152,7 @@ $(function() {
                 value: {{ $data->total }},
                 //color: "#3c8dbc",
                 //highlight: "#3c8dbc",
-                label: '{{ !empty($data->name) ? $data->name : 'NA' }}'
+                label: '{{ !empty($data->name) ? $data->name : 'N/A' }}'
             },
         @endforeach
         ];
@@ -258,9 +267,6 @@ $(function() {
         var barChartCanvas = $("#barChart").get(0).getContext("2d");
         var barChart = new Chart(barChartCanvas);
         var barChartData = areaChartData;
-        barChartData.datasets[1].fillColor = "#00a65a";
-        barChartData.datasets[1].strokeColor = "#00a65a";
-        barChartData.datasets[1].pointColor = "#00a65a";
         var barChartOptions = {
             //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
             scaleBeginAtZero: true,
@@ -298,59 +304,65 @@ $(function() {
 @section('content')
 <div class="box">
     <div class="box-header with-border">
-        <h3 class="box-title">Filtros</h3>
+        <div class="col-md-8">
+            <h3 class="box-title">Filtros</h3>
+        </div>
+        <div class="col-md-4 text-right">
+            @if(!empty($date_from) && !empty($date_to))
+                <h3 class="box-title">Desde <strong>{{ $date_from->format('d/m/Y') }}</strong> hasta <strong>{{ $date_to->format('d/m/Y') }}</strong></h3>
+            @endif
+        </div>
     </div>
     <div class="box-body">
-        <form class="form-inline" method="get">
-            @if(app('user') !== false)
-                @if(app('user')->inRole(app('admins_role')))
-                <div class="form-group">
-                    <label>Filtrar por empresa:</label>
-                    <select class="form-control" name="company_id">
-                        <option value="">-- seleccione empresa --</option>
-                        @foreach($companies_data as $company)
-                            <option value="{{ $company->id }}">{{ $company->name }} </option>
-                        @endforeach
-                    </select>
-                </div>
-                @endif
-            @endif
-            <div class="form-group">
-                <label>Rango de fechas:</label>
-                <input type="hidden" name="df" id="df" />
-                <input type="hidden" name="dt" id="dt" />
-                <div class="input-group">
-                    <button type="button" class="btn btn-default pull-right" id="daterange-btn">
-                        <span>
-                            <i class="fa fa-calendar"></i> Elegir rango de fechas
-                        </span>
-                        <i class="fa fa-caret-down"></i>
-                    </button>
-                </div>
+        <div class="row">
+            <div class="col-md-8">
+                <form class="form-inline" method="get" id="form-filters">
+                    @if(app('user') !== false)
+                        @if(app('user')->inRole(app('admins_role')))
+                        <div class="form-group">
+                            <label>Filtrar por empresa:</label>
+                            <select class="form-control" name="company_id" id="company_id">
+                                <option value="">-- seleccione empresa --</option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->id }}" {{ ($company->id == Request::get('company_id')) ? 'selected="selected"' : '' }}>{{ $company->name }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+                    @endif
+                    <div class="form-group">
+                        <input type="hidden" name="df" id="df" />
+                        <input type="hidden" name="dt" id="dt" />
+                        <div class="input-group">
+                            <button type="button" class="btn btn-default pull-right" id="daterange-btn">
+                                <span>
+                                    <i class="fa fa-calendar"></i> Elegir rango de fechas
+                                </span>
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <button type="submit" class="btn btn-default">Filtrar</button>
-        </form>
+        </div>
     </div>
 </div>
-<div class="nav-tabs-custom">
+<!--<div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false">Reportes totales</a></li>
         <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">Reportes históricos</a></li>
     </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="tab_1">
+    <div class="tab-content"> 
+        <div class="tab-pane active" id="tab_1">-->
             <h4>Por empresa</h4>
             <div class="row">
                 @foreach($companies_count as $company_count)
                 <div class="col-md-4">
-                    <!-- Widget: user widget style 1 -->
                     <div class="box box-widget widget-company-count widget-user-2">
-                        <!-- Add the bg color to the header using any of the bg-* classes -->
                         <div class="widget-user-header bg-{{ $colors[$company_count->index] }}">
                             <div class="widget-user-image">
                                 <img class="img-circle" src="{{ $company_count->image }}" alt="User Avatar">
                             </div>
-                            <!-- /.widget-user-image -->
                             <h3 class="widget-user-username">{{ $company_count->count }}</h3>
                             <h5 class="widget-user-desc">{{ $company_count->name }}</h5>
                         </div>
@@ -364,17 +376,15 @@ $(function() {
                             </ul>
                         </div>
                     </div>
-                    <!-- /.widget-user -->
                 </div>
                 @endforeach
             </div>
             <h4>Por dispositivo</h4>
             <div class="row">
                 <div class="col-md-4">
-                    <!-- small box -->
                     <div class="small-box bg-green">
                         <div class="inner">
-                            <h3>{{ $platforms_count['Mobile'] }}</h3>
+                            <h3>{{ round($platforms_data['Mobile']) }}%</h3>
                             <p>Mobile</p>
                         </div>
                         <div class="icon">
@@ -383,10 +393,9 @@ $(function() {
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <!-- small box -->
                     <div class="small-box bg-aqua">
                         <div class="inner">
-                            <h3>{{ $platforms_count['Tablet'] }}</h3>
+                            <h3>{{ round($platforms_data['Tablet']) }}%</h3>
                             <p>Tablet</p>
                         </div>
                         <div class="icon">
@@ -395,10 +404,9 @@ $(function() {
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <!-- small box -->
                     <div class="small-box bg-yellow">
                         <div class="inner">
-                            <h3>{{ $platforms_count['Desktop'] }}</h3>
+                            <h3>{{ round($platforms_data['Desktop']) }}%</h3>
                             <p>Desktop</p>
                         </div>
                         <div class="icon">
@@ -421,7 +429,7 @@ $(function() {
                                 <div class="col-md-4">
                                     <ul class="chart-legend clearfix">
                                     @foreach($leads_medium as $data)
-                                        <li><i class="fa fa-circle-o text-red"></i> {{ !empty($data->name) ? $data->name : 'NA' }} ({{ $data->total }})</li>
+                                        <li><i class="fa fa-circle-o text-red"></i> {{ !empty($data->name) ? $data->name : 'N/A' }} ({{ $data->total }})</li>
                                     @endforeach
                                     </ul>
                                 </div>
@@ -453,9 +461,9 @@ $(function() {
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="tab-pane" id="tab_2">
-            <h4>Por empresa</h4>
+        <!--/div>
+        <div class="tab-pane" id="tab_2"-->
+            <h4>Comparativa mensual</h4>
             <div class="chart">
                 <canvas id="barChart" style="height:230px"></canvas>
             </div>
@@ -475,7 +483,7 @@ $(function() {
                 </div>
             </div>
             @endif
-        </div>
+        <!--</div>
     </div>
-</div>
+</div>-->
 @stop
