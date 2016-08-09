@@ -111,8 +111,7 @@ class DashboardController extends Controller
                         )
                         ->where('zleader_forms.area_id','=',$area->id)
                         ->where(DB::raw("MONTH(zleader_leads.created_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
-                        ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"))
-                        ->first();
+                        ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"));
                     if (isset($date_from) && isset($date_to)) {
                         $months_db
                             ->whereMonth('zleader_leads.created_at', '>=', $date_from->month)
