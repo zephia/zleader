@@ -163,7 +163,7 @@ class FbwebhookController extends Controller
 
                             Mail::send('ZLeader::lead.email-webhook-failed', ['lead' => $leadgen], function ($message) use ($emails, $company_name) {
                                 $message->from(config('ZLeader.notification_sender_email_address'), $company_name);
-                                $message->subject('Nueva consulta de Facebook');
+                                $message->subject('Nueva consulta de Facebook leadgen');
                                 //$message->replyTo($address);
                                 foreach($emails as $email) {
                                     $message->to($email);
