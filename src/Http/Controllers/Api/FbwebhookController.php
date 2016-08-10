@@ -148,7 +148,7 @@ class FbwebhookController extends Controller
 
                             Log::info('Lead saved');
                         } else {
-                            Log::warning('Form "' . $form_integration_prefix . '" not found');
+                            Log::warning('Form "' . $form_integration_prefix . '" not found!');
 
                             switch($leadgen['form_name']) {
                                 default:
