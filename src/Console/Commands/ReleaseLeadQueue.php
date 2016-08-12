@@ -78,7 +78,7 @@ class ReleaseLeadQueue extends Command
             }
 
             $lead->notify = 0;
-            //$lead->save();
+            $lead->save();
         }
     }
 }
