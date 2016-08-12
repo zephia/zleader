@@ -32,6 +32,7 @@ class Form extends Eloquent
         'user_notification_subject',
         'fb_integration_prefix',
         'integration_id',
+        'integration_options',
     ];
 
     public function area()

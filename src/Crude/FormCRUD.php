@@ -50,6 +50,7 @@ class FormCRUD extends Crude implements
                 'user_notification_subject',
                 'fb_integration_prefix',
                 'integration_id',
+                'integration_options',
                 'slug',
                 'form_code',
             ])
@@ -68,6 +69,7 @@ class FormCRUD extends Crude implements
                 'name' => 'Nombre',
                 'area_id' => 'Area',
                 'integration_id' => 'Integración de CRM',
+                'integration_options' => 'Opciones de integración (JSON)',
                 'area_name' => 'Area',
                 'company_name' => 'Empresa',
                 'feedback_url' => 'Thank you page URL',

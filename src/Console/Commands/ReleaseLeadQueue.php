@@ -39,27 +39,27 @@ class ReleaseLeadQueue extends Command
      */
     public function handle()
     {
-        $notification_queue = Lead::where('notify','=',1)->get();
+        $notification_queue = Lead::where('notify', '=', 1)->get();
 
         foreach ($notification_queue as $lead) {
 
-            if($lead) {
+            if ($lead) {
                 if (!empty($lead->form->integration) && !empty($lead->form->integration_id)) {
-                    $integration = new $lead->form->integration->class($lead->id);
+                    $integration = new $lead->form->integration->class($lead->id, json_decode($lead->form->integration_options, true));
                 }
             }
 
-            if(!empty($lead->form->notification_emails) && !empty($lead->form->notification_subject)) {
+            if (!empty($lead->form->notification_emails) && !empty($lead->form->notification_subject)) {
                 $emails = explode(',', $lead->form->notification_emails);
 
-                if(is_array($emails)) {
+                if (is_array($emails)) {
                     // Internal e-mail notification
                     Mail::send('ZLeader::lead.email-internal-notification', ['lead' => $lead], function ($message) use ($emails, $lead) {
                         $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
                         $message->subject($lead->form->notification_subject);
                         //$message->replyTo($address);
-                        foreach($emails as $email) {
-                            if(!empty(trim($email))) {
+                        foreach ($emails as $email) {
+                            if (!empty(trim($email))) {
                                 $message->to(trim($email));
                             }
                         }
@@ -69,7 +69,7 @@ class ReleaseLeadQueue extends Command
 
             // User e-mail notification
             $email = trim($lead->getValueByKey('email'));
-            if(!empty($email) && !empty($lead->form->user_notification_subject)) {
+            if (!empty($email) && !empty($lead->form->user_notification_subject)) {
                 Mail::send('ZLeader::lead.email-user-notification', ['lead' => $lead], function ($message) use ($email, $lead) {
                     $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
                     $message->subject($lead->form->user_notification_subject);
@@ -78,7 +78,7 @@ class ReleaseLeadQueue extends Command
             }
 
             $lead->notify = 0;
-            $lead->save();
+            //$lead->save();
         }
     }
 }
