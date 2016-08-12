@@ -97,6 +97,7 @@ class FormCRUD extends Crude implements
                 'zleader_forms.name',
                 'zleader_forms.area_id',
                 'zleader_forms.integration_id',
+                'zleader_forms.integration_options',
                 'zleader_forms.feedback_url',
                 'zleader_forms.notification_emails',
                 'zleader_forms.notification_subject',
