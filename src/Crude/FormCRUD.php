@@ -116,7 +116,7 @@ class FormCRUD extends Crude implements
         $script_url = str_replace(['http://','https://'],['',''],URL::to('/')) . '/zl.js';
 
         $model->form_code = '<form class="zlform" action="' . URL::action('\Zephia\ZLeader\Http\Controllers\Api\LeadController@store', ['slug' => $model->slug]) . '" method="post">' . "\r\n<!-- Fields: (zlfield_example) -->\r\n" . '</form>' . "\r\n";
-        $model->form_code.= "<script type=\"text/javascript\">" . "\r\n" . "(function(d,s,e,t){e=d.createElement(s);e.type='text/java'+s;e.async='async';" . "\r\n" . "e.src='http'+('https:'===location.protocol?'s://s':'://')+'" . $script_url . "';t=d.getElementsByTagName(s)[0];" . "\r\n" . "t.parentNode.insertBefore(e,t);})(document,'script');" . "\r\n" . "</script>";
+        $model->form_code.= "<script type=\"text/javascript\">" . "\r\n" . "(function(d,s,e,t){e=d.createElement(s);e.type='text/java'+s;e.async='async';" . "\r\n" . "e.src='http'+('https:'===location.protocol?'s://':'://')+'" . $script_url . "';t=d.getElementsByTagName(s)[0];" . "\r\n" . "t.parentNode.insertBefore(e,t);})(document,'script');" . "\r\n" . "</script>";
         return $model;
     }
 
