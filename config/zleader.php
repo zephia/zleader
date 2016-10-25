@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'notification_sender_email_address' => env('ZLEADER_DEFAULT_SENDER_EMAIL=website@autocity.com.ar','website@autocity.com.ar'),
+    'notification_sender_email_address' => env('ZLEADER_DEFAULT_SENDER_EMAIL','website@zephia.com.ar'),
 
     /*
     |--------------------------------------------------------------------------
