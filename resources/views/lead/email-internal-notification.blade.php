@@ -334,7 +334,7 @@ float:none!important;
 										</table>
 										<table align="left" class="column">
 											<tr>
-												<td><h5 class="">Infornación de contacto:</h5>
+												<td><h5 class="">Información de contacto:</h5>
 													<p>Tel: <strong>{{ $lead->form->area->company->phone_number }}</strong><br/>
 														E-mail: <strong><a href="emailto:{{ $lead->form->area->company->email }}">{{ $lead->form->area->company->email }}</a></strong></p></td>
 											</tr>
