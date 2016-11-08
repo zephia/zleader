@@ -17,8 +17,8 @@
         "almasaeed2010/adminlte": "~2.0",
         "cviebrock/eloquent-sluggable": "^4.0.2",
         "jan-dolata/crude-crud": "^1.0",
-        "jenssegers/agent": "^2.3",
-        "laravel/socialite": "^2.0"
+        "sammyk/laravel-facebook-sdk": "^3.0",
+        "jenssegers/agent": "^2.3"
     },
     "autoload": {
         "psr-4": {
