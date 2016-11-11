@@ -59,7 +59,10 @@ class ReleaseLeadQueue extends Command
                         Mail::send('ZLeader::lead.email-internal-notification', ['lead' => $lead], function ($message) use ($emails, $lead) {
                             $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
                             $message->subject($lead->form->notification_subject);
-                            //$message->replyTo($address);
+
+                            $reply_email = trim($lead->getValueByKey('email'));
+                            $message->replyTo($reply_email);
+
                             foreach ($emails as $email) {
                                 if (!empty(trim($email))) {
                                     $message->to(trim($email));
@@ -67,23 +70,23 @@ class ReleaseLeadQueue extends Command
                             }
                         });
                     } catch (\Exception $e) {
-                        Log::info($e->getMessage());
+                        Log::error($e->getMessage());
                     }
                 }
             }
 
-            // User e-mail notification
-            $email = trim($lead->getValueByKey('email'));
-            if (!empty($email) && !empty($lead->form->user_notification_subject)) {
-                try {
+            try {
+                // User e-mail notification
+                $email = trim($lead->getValueByKey('email'));
+                if (!empty($email) && !empty($lead->form->user_notification_subject)) {
                     Mail::send('ZLeader::lead.email-user-notification', ['lead' => $lead], function ($message) use ($email, $lead) {
                         $message->from(config('ZLeader.notification_sender_email_address'), $lead->form->area->company->name);
                         $message->subject($lead->form->user_notification_subject);
                         $message->to($email);
                     });
-                } catch (\Exception $e) {
-                    Log::info($e->getMessage());
                 }
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
             }
 
             $lead->notify = 0;
