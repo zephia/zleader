@@ -23,6 +23,7 @@ return [
         'default_graph_version' => 'v2.8',
         //'enable_beta_mode' => true,
         //'http_client_handler' => 'guzzle',
+        'http_client_handler' => 'curl',
     ],
 
     /*
