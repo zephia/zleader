@@ -57,7 +57,7 @@ class ReleaseLeadQueue extends Command
                         $integration = new $lead->form->integration->class($lead->id, json_decode($lead->form->integration_options, true));
                     } catch (\Exception $e) {
                         Log::error($e->getMessage());
-                        $slack_client->send('Integration error: ```' . $e->getMessage() . '```');
+                        $slack_client->send('Integration error: ' . $e->getMessage() . ' - ' . '`' . $lead->toJson() . '`');
                         $lead->notify = 0;
                         $lead->save();
                     }
@@ -84,7 +84,7 @@ class ReleaseLeadQueue extends Command
                             });
                         } catch (\Exception $e) {
                             Log::error($e->getMessage());
-                            $slack_client->send('Internal e-mail notification error: ```' . $e->getMessage() . '```');
+                            $slack_client->send('Internal e-mail notification error: ' . $e->getMessage() . ' - ' . '`' . $lead->toJson() . '`');
                         }
                     }
                 }
@@ -101,7 +101,7 @@ class ReleaseLeadQueue extends Command
                     }
                 } catch (\Exception $e) {
                     Log::error($e->getMessage());
-                    $slack_client->send('User e-mail notification error: ```' . $e->getMessage() . '```');
+                    $slack_client->send('User e-mail notification error: ' . $e->getMessage() . ' - '. '`' . $lead->toJson() . '`');
                     $lead->notify = 0;
                     $lead->save();
                 }
