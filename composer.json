@@ -19,7 +19,8 @@
         "jan-dolata/crude-crud": "^1.0",
         "sammyk/laravel-facebook-sdk": "^3.4",
         "jenssegers/agent": "^2.3",
-        "maknz/slack": "^1.7"
+        "maknz/slack": "^1.7",
+        "s-ichikawa/laravel-sendgrid-driver": "^1.2"
     },
     "autoload": {
         "psr-4": {
