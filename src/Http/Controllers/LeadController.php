@@ -56,7 +56,7 @@ class LeadController extends Controller
             }
         }
 
-        $leads = $lead_model->get();
+        $leads = $lead_model->orderBy('id', 'desc')->take(10000)->get();
 
         $data = [];
         $keys = [];
