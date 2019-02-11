@@ -36,7 +36,6 @@ class ZLeaderServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../../resources/assets' => public_path('vendor/' . $this->packageName . '/assets'),
-            base_path('vendor/cartalyst/data-grid/public/js') => public_path('vendor/' . $this->packageName . '/cartalyst/data-grid/js'),
             base_path('vendor/almasaeed2010/adminlte/dist') => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/dist'),
             base_path('vendor/almasaeed2010/adminlte/plugins') => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/plugins'),
             base_path('vendor/almasaeed2010/adminlte/bootstrap') => public_path('vendor/' . $this->packageName . '/almasaeed2010/adminlte/bootstrap'),
