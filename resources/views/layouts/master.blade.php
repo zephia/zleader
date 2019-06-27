@@ -197,16 +197,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-      @if(app('user') !== false)
+      @if(Auth::check())
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="{{ app('user')->avatar_url }}" class="img-circle" height="160" alt="User Image">
+          <img src="{{ Auth::user()->avatar_url }}" class="img-circle" height="160" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>{{ app('user')->first_name . ' ' . app('user')->last_name }}</p>
-          <!-- Status -->
-          <a href="#">{{ app('user')->roles[0]->name }}</a>
+          <p>{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</p>
         </div>
         <div class="pull-right text-right">
           <a href="/logout" title="Cerrar sesión"><i class="fa fa-sign-out"></i></a>

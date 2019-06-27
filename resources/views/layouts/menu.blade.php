@@ -4,8 +4,7 @@
   <!-- Optionally, you can add icons to the links -->
   <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\DashboardController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\DashboardController@index') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
   <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\LeadController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\LeadController@index') }}"><i class="fa fa-crosshairs"></i> <span>Leads</span></a></li>
-  @if(app('user') !== false)
-    @if(app('user')->inRole(app('admins_role')))
+  @if (Auth::check())
       <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\FormController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\FormController@index') }}"><i class="fa fa-list-alt"></i> <span>Formularios</span></a></li>
       <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\CompanyController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\CompanyController@index') }}"><i class="fa fa-building"></i> <span>Empresas</span></a></li>
       <li class="{{ Route::getCurrentRoute()->getActionName() == 'Zephia\\ZLeader\\Http\\Controllers\\AreaController@index' ? 'active' : '' }}"><a href="{{ action('\Zephia\ZLeader\Http\Controllers\AreaController@index') }}"><i class="fa fa-sitemap"></i> <span>Areas</span></a></li>
@@ -23,7 +22,6 @@
   </li> -->
       <li class="header">OPCIONES</li>
       <li><a href="#"><i class="fa fa-gears"></i> <span>Configuración</span></a></li>
-    @endif
   @endif
 </ul>
 <!-- /.sidebar-menu -->
