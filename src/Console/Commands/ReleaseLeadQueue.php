@@ -15,7 +15,7 @@ class ReleaseLeadQueue extends Command
      *
      * @var string
      */
-    protected $signature = 'autocity:release-queue';
+    protected $signature = 'zleader:release-queue';
 
     /**
      * The console command description.
@@ -44,8 +44,8 @@ class ReleaseLeadQueue extends Command
         $notification_queue = Lead::where('notify', '=', 1)->get();
 
         $slack_client = new SlackClient(env('ZLEADER_SLACK_NOTIFICATIONS_WEBHOOK_URL',[
-            'username' => 'Autocity Core',
-            'channel' => '#autocity-alerts',
+            'username' => 'Zleader ' . env('APP_NAME'),
+            'channel' => '#zleader-alerts',
             'icon' => ':cloud:',
         ]));
 
