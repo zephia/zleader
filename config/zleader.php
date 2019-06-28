@@ -19,7 +19,6 @@ return [
         JanDolata\CrudeCRUD\CrudeCRUDServiceProvider::class,
         SammyK\LaravelFacebookSdk\LaravelFacebookSdkServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
-        Sichikawa\LaravelSendgridDriver\SendgridTransportServiceProvider::class,
     ],
 
     /*
