@@ -85,7 +85,7 @@ class ZLeaderServiceProvider extends ServiceProvider
     protected function registerMiddlewares()
     {
         foreach (config($this->packageName . '.middlewares', []) as $middlewareName => $middlewareClass) {
-            $this->app['router']->middleware($middlewareName, $middlewareClass);
+            $this->app['router']->aliasMiddleware($middlewareName, $middlewareClass);
         }
     }
 
