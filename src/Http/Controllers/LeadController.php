@@ -61,38 +61,40 @@ class LeadController extends Controller
         
         //dd(Session::all());
 
-        foreach ($currentFilters as $appliedFilterKey => $appliedFilter) {
-            if (array_key_exists($appliedFilterKey, $fixedColumns)) {
-                switch ($appliedFilterKey) {
-                    case 'form_name';
-                        $leadQuery->whereHas('form', function($query) use ($appliedFilterKey, $appliedFilter) {
-                            $query->where('name', 'like', '%' . $appliedFilter['value'] . '%');
-                        });
-                        break;
-                    case 'area_name';
-                        $leadQuery->whereHas('form', function($query) use ($appliedFilterKey, $appliedFilter) {
-                            $query->whereHas('area', function($query) use ($appliedFilterKey, $appliedFilter) {
+        if (!empty($currentFilters)) {
+            foreach ($currentFilters as $appliedFilterKey => $appliedFilter) {
+                if (array_key_exists($appliedFilterKey, $fixedColumns)) {
+                    switch ($appliedFilterKey) {
+                        case 'form_name';
+                            $leadQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                 $query->where('name', 'like', '%' . $appliedFilter['value'] . '%');
                             });
-                        });
-                        break;
-                    case 'company_name';
-                        $leadQuery->whereHas('form', function($query) use ($appliedFilterKey, $appliedFilter) {
-                            $query->whereHas('area', function($query) use ($appliedFilterKey, $appliedFilter) {
-                                $query->whereHas('company', function($query) use ($appliedFilterKey, $appliedFilter) {
+                            break;
+                        case 'area_name';
+                            $leadQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                                $query->whereHas('area', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                     $query->where('name', 'like', '%' . $appliedFilter['value'] . '%');
                                 });
                             });
-                        });
-                        break;
-                    default:
-                        $leadQuery->where($appliedFilterKey, 'like', '%' . $appliedFilter['value'] . '%');
+                            break;
+                        case 'company_name';
+                            $leadQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                                $query->whereHas('area', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                                    $query->whereHas('company', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                                        $query->where('name', 'like', '%' . $appliedFilter['value'] . '%');
+                                    });
+                                });
+                            });
+                            break;
+                        default:
+                            $leadQuery->where($appliedFilterKey, 'like', '%' . $appliedFilter['value'] . '%');
+                    }
+                } else {
+                    $leadQuery->whereHas('values', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                        $query->where('key', $appliedFilterKey)
+                            ->where('value', 'like', '%' . $appliedFilter['value'] . '%');
+                    });
                 }
-            } else {
-                $leadQuery->whereHas('values', function($query) use ($appliedFilterKey, $appliedFilter) {
-                    $query->where('key', $appliedFilterKey)
-                        ->where('value', 'like', '%' . $appliedFilter['value'] . '%');
-                });
             }
         }
 
