@@ -204,7 +204,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <img src="{{ Auth::user()->avatar_url }}" class="img-circle" height="160" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</p>
+          <p>{{ Auth::user()->name }}</p>
         </div>
         <div class="pull-right text-right">
           <a href="/logout" title="Cerrar sesión"><i class="fa fa-sign-out"></i></a>
@@ -241,7 +241,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       by Zephia Digital Mind
     </div>
     <!-- Default to the left -->
-    <strong>Copyright &copy; {{ date("Y", time()) }} <a href="#">Autocity</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; {{ date("Y", time()) }} <a href="https://zephia.com.ar">Zephia Digital Mind</a>.</strong> All rights reserved.
   </footer>
 </div>
 @yield('scripts')
