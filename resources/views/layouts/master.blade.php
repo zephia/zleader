@@ -24,6 +24,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   -->
   <link rel="stylesheet" href="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/css/skins/skin-red.min.css') }}">
 
+  <link rel="stylesheet" href="{{ URL::asset('vendor/ZLeader/assets/css/zleader.css') }}">
+
   @yield('styles')
 
   <style type="text/css">
@@ -244,6 +246,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <strong>Copyright &copy; {{ date("Y", time()) }} <a href="https://zephia.com.ar">Zephia Digital Mind</a>.</strong> All rights reserved.
   </footer>
 </div>
+<!-- jQuery 2.2.3 -->
+<script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/bootstrap/js/bootstrap.min.js') }}"></script>
+<!-- AdminLTE App -->
+<script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/js/app.min.js') }}"></script>
 @yield('scripts')
 </body>
 </html>

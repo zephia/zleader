@@ -11,13 +11,6 @@
 @stop
 
 @section('scripts')
-    <!-- jQuery 2.2.3 -->
-    <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
-    <!-- Bootstrap 3.3.6 -->
-    <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/bootstrap/js/bootstrap.min.js') }}"></script>
-    <!-- AdminLTE App -->
-    <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/dist/js/app.min.js') }}"></script>
-
     <script src="{{ URL::asset('vendor/ZLeader/assets/js/moment.js') }}"></script>
     <script src="{{ URL::asset('vendor/ZLeader/assets/js/bootstrap-datetimepicker.js') }}"></script>
 
@@ -27,13 +20,106 @@
             $('.datePicker').datetimepicker({
                 pickTime: false
             });
+
+            var xhr_lead;
+            var xhr_forms;
+
+            $('.table tbody tr').on('click', function (event) {
+                event.preventDefault();
+
+                $("#loadMe").modal({
+                    backdrop: "static",
+                    keyboard: false,
+                    show: true
+                });
+
+                try {
+                    xhr_lead.abort();
+                    xhr_forms.abort();
+                } catch (e) {}
+
+                xhr_lead = $.ajax({
+                    dataType: "json",
+                    url: "leads/" + $(this).data('lead-id')
+                })
+                    .done(function (lead) {
+                        $('#leadShow .modal-body').empty();
+                        addLeadField('Id', lead.id);
+                        $.each(lead.values, function (index, value) {
+                            addLeadField(value.label, value.value);
+                            $('#leadShow').modal('show');
+                        });
+                        addLeadField('Fecha', lead.created_at);
+                        addLeadField('Empresa', lead.company_name);
+                        addLeadField('Área', lead.area_name);
+                        addLeadField('Formulario', lead.form_name);
+                        addLeadField('Formulario', '<select id="lead-form-list"><option>Cargando...</option></select>');
+                        addLeadField('Dispositivo', lead.remote_platform);
+                        addLeadField('UTM Source', lead.utm_source);
+                        addLeadField('UTM Campaign', lead.utm_campaign);
+                        addLeadField('UTM medium', lead.utm_medium);
+                        addLeadField('UTM Term', lead.utm_term);
+                        addLeadField('UTM Content', lead.utm_content);
+                        addLeadField('URL', lead.referer);
+                        addLeadField('IP', lead.remote_ip);
+
+                        xhr_forms = $.ajax({
+                            dataType: "json",
+                            url: "forms/json"
+                        })
+                            .done(function (forms) {
+                                var $formSelect = $('#lead-form-list');
+                                $formSelect.empty();
+                                $.each(forms, function (index, value) {
+                                    $formSelect.append('<option value="' + value.id + '">' + value.name + ' / ' + value.area.name + ' / ' + value.area.company.name + '</option>');
+                                });
+                                $formSelect.val(lead.id);
+                                $formSelect.data('current', lead.id);
+
+                                $formSelect.on('change', function (event) {
+                                    if (confirm('Esta seguro de cambiar el lead de formulario?')) {
+                                        var selected_form_id = $(this).val();
+
+                                        $.ajax({
+                                            method: "patch",
+                                            dataType: "json",
+                                            url: "leads/" + lead.id,
+                                            data: {
+                                                form_id: selected_form_id,
+                                                notify: 1
+                                            }
+                                        })
+                                            .done(function (forms) {
+                                                $('#leadShow').modal('hide');
+                                                location.reload();
+                                            });
+                                    } else {
+                                        $(this).val($.data(this, 'current'));
+                                        return false;
+                                    }
+
+                                    $.data(this, 'current', $(this).val());
+                                });
+
+                                $("#loadMe").modal("hide");
+                            });
+                    });
+
+                return false;
+            });
+
+            function addLeadField(name, value) {
+                if (value != '') {
+                    $('#leadShow .modal-body').append('<div class="row"><div class="col-sm-4 text-right"><strong>' + name + ':</strong></div><div class="col-sm-8">' + value + '</div></div>');
+                }
+            }
         });
     </script>
 @endsection
 
 {{-- Page content --}}
 @section('content')
-    <div class="loader" data-grid="standard">
+    <div class="overlay">
         <div>
             <span></span>
         </div>
@@ -137,7 +223,10 @@
                     <div class="box-body">
                         <div class="applied-filters" data-grid="standard">
                             @foreach(Session::get('zlLeadFilters') as $column => $filter)
-                                <span><strong>{{ $filter['name'] }}:</strong> {{ $filter['value'] }} <a href="{{ action('\Zephia\ZLeader\Http\Controllers\LeadController@index', ['clearFilter' => $column]) }}"><i class="fa fa-close"></i></a></span>
+                                <span class="label label-default"><strong>{{ $filter['name'] }}:</strong> {{ $filter['value'] }} <a
+                                            class="text-red"
+                                            href="{{ action('\Zephia\ZLeader\Http\Controllers\LeadController@index', ['clearFilter' => $column]) }}"><i
+                                                class="fa fa-close"></i></a></span>
                             @endforeach
                         </div>
                     </div>
@@ -171,7 +260,7 @@
                         </thead>
                         <tbody>
                         @foreach($leads as $lead)
-                            <tr>
+                            <tr data-lead-id="{{ $lead->id }}">
                                 <td>{{ $lead->created_at->format('d/m/Y H:i') }}</td>
                                 @foreach($columnables as $field)
                                     <td>{{ @$lead->values->where('key', $field->key)->first()->value }}</td>
@@ -204,7 +293,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                 aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Detalle de lead</h4>
+                    <h4 class="modal-title" id="myModalLabel">Detalle del lead</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -214,6 +303,20 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- loader Modal -->
+    <div class="modal fade" id="loadMe" tabindex="-1" role="dialog" aria-labelledby="loadMeLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="zleader-loader-spinner"></div>
+                    <div clas="loader-txt">
+                        <p>Cargando...</p>
+                    </div>
                 </div>
             </div>
         </div>

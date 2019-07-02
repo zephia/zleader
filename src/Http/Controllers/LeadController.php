@@ -119,8 +119,7 @@ class LeadController extends Controller
 
         unset(
             $response_data['updated_at'], 
-            $response_data['notify'], 
-            $response_data['form_id'], 
+            $response_data['notify'],
             $response_data['fb_leadgen_id'], 
             $response_data['user_agent'],
             $response_data['form']
@@ -190,5 +189,17 @@ class LeadController extends Controller
             'direction' => 'desc',
             'csv_delimiter' => ';',
         ]);
+    }
+
+    public function patch($lead_id)
+    {
+        $lead = Lead::findOrFail($lead_id);
+
+        $lead->form_id = (int)Input::get('form_id');
+        $lead->notify = (int)Input::get('notify');
+
+        $lead->save();
+
+        return $lead;
     }
 }
