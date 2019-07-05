@@ -8,12 +8,13 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ URL::asset('vendor/ZLeader/assets/css/datepicker.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 @stop
 
 @section('scripts')
     <script src="{{ URL::asset('vendor/ZLeader/assets/js/moment.js') }}"></script>
     <script src="{{ URL::asset('vendor/ZLeader/assets/js/bootstrap-datetimepicker.js') }}"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
     <script>
         $(function () {
             // Date Picker
@@ -47,13 +48,12 @@
                         addLeadField('Id', lead.id);
                         $.each(lead.values, function (index, value) {
                             addLeadField(value.label, value.value);
-                            $('#leadShow').modal('show');
                         });
                         addLeadField('Fecha', lead.created_at);
                         addLeadField('Empresa', lead.company_name);
                         addLeadField('Área', lead.area_name);
                         addLeadField('Formulario', lead.form_name);
-                        addLeadField('Formulario', '<select id="lead-form-list"><option>Cargando...</option></select>');
+                        addLeadField('Formulario', '<select id="lead-form-list" class="select2"><option>Cargando...</option></select>');
                         addLeadField('Dispositivo', lead.remote_platform);
                         addLeadField('UTM Source', lead.utm_source);
                         addLeadField('UTM Campaign', lead.utm_campaign);
@@ -62,6 +62,7 @@
                         addLeadField('UTM Content', lead.utm_content);
                         addLeadField('URL', lead.referer);
                         addLeadField('IP', lead.remote_ip);
+                        addLeadField('Notas', '<textarea id="lead-notes" name="noted" style="width: 100%;" rows="4">' + (lead.notes == null ? '' : lead.notes) + '</textarea><a class="btn btn-primary" id="lead-notes-save">Guardar notas</a>');
 
                         xhr_forms = $.ajax({
                             dataType: "json",
@@ -101,8 +102,29 @@
                                     $.data(this, 'current', $(this).val());
                                 });
 
+                                $('.select2').select2();
+
+                                $('#leadShow').modal('show');
                                 $("#loadMe").modal("hide");
                             });
+
+                        $('#lead-notes-save').on('click', function (event) {
+                            $("#loadMe").modal("show");
+                            $.ajax({
+                                method: "patch",
+                                dataType: "json",
+                                url: "leads/" + lead.id,
+                                data: {
+                                    notes: $('#lead-notes').val()
+                                }
+                            })
+                                .done(function (forms) {
+                                    $("#loadMe").modal("hide");
+                                    $('#leadShow').modal('hide');
+                                });
+
+                            $.data(this, 'current', $(this).val());
+                        });
                     });
 
                 return false;
@@ -286,9 +308,9 @@
     {{-- Pagination --}}
     <footer id="pagination" data-grid="standard" class="text-right">{{ $leads->links() }}</footer>
 
-    <!-- Modal -->
+    <!-- Lead details Modal -->
     <div class="modal fade" id="leadShow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog" role="document" style="width: 70%">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span

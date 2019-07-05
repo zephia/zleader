@@ -195,8 +195,17 @@ class LeadController extends Controller
     {
         $lead = Lead::findOrFail($lead_id);
 
-        $lead->form_id = (int)Input::get('form_id');
-        $lead->notify = (int)Input::get('notify');
+        if(!empty(Input::get('form_id'))){
+            $lead->form_id = (int)Input::get('form_id');
+        }
+
+        if(!empty(Input::get('notify'))) {
+            $lead->notify = (int)Input::get('notify');
+        }
+
+        if(!empty(Input::get('notes'))) {
+            $lead->notes = Input::get('notes');
+        }
 
         $lead->save();
 
