@@ -8,7 +8,7 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ URL::asset('vendor/ZLeader/assets/css/datepicker.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet"/>
 @stop
 
 @section('scripts')
@@ -37,7 +37,8 @@
                 try {
                     xhr_lead.abort();
                     xhr_forms.abort();
-                } catch (e) {}
+                } catch (e) {
+                }
 
                 xhr_lead = $.ajax({
                     dataType: "json",
@@ -53,7 +54,6 @@
                         addLeadField('Empresa', lead.company_name);
                         addLeadField('Área', lead.area_name);
                         addLeadField('Formulario', lead.form_name);
-                        addLeadField('Formulario', '<select id="lead-form-list" class="select2"><option>Cargando...</option></select>');
                         addLeadField('Dispositivo', lead.remote_platform);
                         addLeadField('UTM Source', lead.utm_source);
                         addLeadField('UTM Campaign', lead.utm_campaign);
@@ -62,7 +62,8 @@
                         addLeadField('UTM Content', lead.utm_content);
                         addLeadField('URL', lead.referer);
                         addLeadField('IP', lead.remote_ip);
-                        addLeadField('Notas', '<textarea id="lead-notes" name="noted" style="width: 100%;" rows="4">' + (lead.notes == null ? '' : lead.notes) + '</textarea><a class="btn btn-primary" id="lead-notes-save">Guardar notas</a>');
+                        addLeadField('Derivar', '<select id="lead-form-list" class="select2"><option>Cargando...</option></select>');
+                        addLeadField('Notas', '<textarea id="lead-notes" name="noted" style="width: 100%;" rows="4">' + (lead.notes == null ? '' : lead.notes) + '</textarea>');
 
                         xhr_forms = $.ajax({
                             dataType: "json",
@@ -71,50 +72,54 @@
                             .done(function (forms) {
                                 var $formSelect = $('#lead-form-list');
                                 $formSelect.empty();
+                                $formSelect.append('<option value="">-- Seleccione Formulario a derivar --</option>');
                                 $.each(forms, function (index, value) {
                                     $formSelect.append('<option value="' + value.id + '">' + value.name + ' / ' + value.area.name + ' / ' + value.area.company.name + '</option>');
                                 });
-                                $formSelect.val(lead.id);
+                                //$formSelect.val(lead.id);
                                 $formSelect.data('current', lead.id);
 
-                                $formSelect.on('change', function (event) {
-                                    if (confirm('Esta seguro de cambiar el lead de formulario?')) {
-                                        var selected_form_id = $(this).val();
-
-                                        $.ajax({
-                                            method: "patch",
-                                            dataType: "json",
-                                            url: "leads/" + lead.id,
-                                            data: {
-                                                form_id: selected_form_id,
-                                                notify: 1
-                                            }
-                                        })
-                                            .done(function (forms) {
-                                                $('#leadShow').modal('hide');
-                                                location.reload();
-                                            });
-                                    } else {
-                                        $(this).val($.data(this, 'current'));
-                                        return false;
-                                    }
-
-                                    $.data(this, 'current', $(this).val());
-                                });
-
-                                $('.select2').select2();
+                                $('.select2').select2({width: '100%'});
 
                                 $('#leadShow').modal('show');
                                 $("#loadMe").modal("hide");
                             });
 
+                        $('#lead-notes-save').off();
                         $('#lead-notes-save').on('click', function (event) {
+                            var derivation = false;
+                            var selected_form_id = null;
+                            if ($('#lead-form-list').val() != '') {
+                                if (confirm("Esta seguro de cambiar el lead de formulario?\nSe re-enviarán los e-mails de notificación a las direcciones configuradas en el formulario seleccionado.")) {
+                                    var selected_form_id = $('#lead-form-list').val();
+                                    derivation = false;
+
+                                    $.ajax({
+                                        method: "patch",
+                                        dataType: "json",
+                                        url: "leads/" + lead.id,
+                                        data: {
+                                            form_id: selected_form_id,
+                                            notify: 1
+                                        }
+                                    })
+                                        .done(function (forms) {
+                                            $('#leadShow').modal('hide');
+                                            location.reload();
+                                        });
+                                } else {
+                                    return false;
+                                }
+                            }
                             $("#loadMe").modal("show");
+
                             $.ajax({
                                 method: "patch",
                                 dataType: "json",
                                 url: "leads/" + lead.id,
                                 data: {
+                                    form_id: (selected_form_id == null ? '' : selected_form_id),
+                                    notify: (selected_form_id == null ? '' : 1),
                                     notes: $('#lead-notes').val()
                                 }
                             })
@@ -122,8 +127,6 @@
                                     $("#loadMe").modal("hide");
                                     $('#leadShow').modal('hide');
                                 });
-
-                            $.data(this, 'current', $(this).val());
                         });
                     });
 
@@ -325,6 +328,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="lead-notes-save">Guardar</button>
                 </div>
             </div>
         </div>
