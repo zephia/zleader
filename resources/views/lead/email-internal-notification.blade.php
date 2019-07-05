@@ -312,6 +312,10 @@ float:none!important;
 									<td>{{ $field->value }}</td>
 								</tr>
 							@endforeach
+								<tr>
+									<td><strong>Notas internas:</strong></td>
+									<td>{{ $lead->notes }}</td>
+								</tr>
 							</table>
 							<table class="social" width="100%">
 								<tr>
