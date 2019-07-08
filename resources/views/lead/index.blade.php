@@ -286,7 +286,7 @@
                             @foreach(Session::get('zlLeadFilters') as $column => $filter)
                                 <span class="label label-default"><strong>{{ $filter['name'] }}:</strong> {{ $filter['value'] }} <a
                                             class="text-red"
-                                            href="{{ action('\Zephia\ZLeader\Http\Controllers\LeadController@index', ['clearFilter' => $column]) }}"><i
+                                            href="{{ action('\Zephia\ZLeader\Http\Controllers\LeadController@index', ['clearFilter' => $column, 'drf' => Request::get('drf')]) }}"><i
                                                 class="fa fa-close"></i></a></span>
                             @endforeach
                         </div>
