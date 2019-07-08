@@ -7,19 +7,82 @@
 @section('page_header', 'Leads')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ URL::asset('vendor/ZLeader/assets/css/datepicker.css') }}">
+    <link rel="stylesheet"
+          href="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet"/>
 @stop
 
 @section('scripts')
-    <script src="{{ URL::asset('vendor/ZLeader/assets/js/moment.js') }}"></script>
-    <script src="{{ URL::asset('vendor/ZLeader/assets/js/bootstrap-datetimepicker.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="{{ URL::asset('vendor/ZLeader/almasaeed2010/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
     <script>
         $(function () {
-            // Date Picker
-            $('.datePicker').datetimepicker({
-                pickTime: false
+
+            //Date range picker
+            var $dateFiltersForm = $('#date-filter-form');
+            $('#daterange-filter').daterangepicker({
+                showDropdowns: true,
+                autoUpdateInput: false,
+                ranges: {
+                    'Hoy': [moment(), moment()],
+                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Últimos 7 Días': [moment().subtract(6, 'days'), moment()],
+                    'Últimos 30 Días': [moment().subtract(29, 'days'), moment()],
+                    'Mes actual': [moment().startOf('month'), moment().endOf('month')],
+                    'Mes pasado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                "locale": {
+                    "format": "DD/MM/YYYY",
+                    "separator": " - ",
+                    "applyLabel": "Aplicar",
+                    "cancelLabel": "Cancelar",
+                    "fromLabel": "Desde",
+                    "toLabel": "Hasta",
+                    "customRangeLabel": "Personalizar",
+                    "weekLabel": "S",
+                    "daysOfWeek": [
+                        "Do",
+                        "Lu",
+                        "Ma",
+                        "Mi",
+                        "Ju",
+                        "Vi",
+                        "Sa"
+                    ],
+                    "monthNames": [
+                        "Enero",
+                        "Febrero",
+                        "Marzo",
+                        "Abril",
+                        "Mayo",
+                        "Junio",
+                        "Julio",
+                        "Agosto",
+                        "Septiembre",
+                        "Octubre",
+                        "Noviembre",
+                        "Diciembre"
+                    ],
+                    "firstDay": 1
+                },
+                "alwaysShowCalendars": true,
+                "opens": "right"
+            }, function (start, end, label) {
+                $('#daterange-filter').val(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+                $dateFiltersForm.submit();
+            });
+
+            var $filtersForm = $('#filters-form');
+
+            $filtersForm.on('submit', function (event) {
+                if ($('#field-filter-selector').val() == '') {
+                    alert('Primero seleccione un campo para filtrar');
+
+                    return false;
+                }
+
+                return true;
             });
 
             var xhr_lead;
@@ -140,7 +203,7 @@
             }
         });
     </script>
-@endsection
+@append
 
 {{-- Page content --}}
 @section('content')
@@ -155,24 +218,6 @@
                 <div class="box-header">
                     <h3 class="box-title">Filtros</h3>
                 </div>
-            {{-- Filters button --}}
-            <!--div class="col-md-1">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        Filters <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#" data-grid="standard" data-filter="country:United States" data-label="country:Country:United States">United States</a></li>
-                        <li><a href="#" data-grid="standard" data-filter="country:Canada" data-label="country:Country:Canada">Canada</a></li>
-                        <li><a href="#" data-grid="standard" data-filter="population:>:10000" data-label="population:Population >:10000">Populations > 10000</a></li>
-                        <li><a href="#" data-grid="standard" data-filter="population:=:5000" data-label="population:Populations is:5000">Populations = 5000</a></li>
-                        <li><a href="#" data-grid="standard" data-filter="population:>:5000">Populations > 5000</a></li>
-                        <li><a href="#" data-grid="standard" data-filter="population:<:5000">Populations < 5000</a></li>
-                        <li><a href="#" data-grid="standard" data-filter="country:United States, subdivision:washington, population:<:5000" data-label="country:Country:United States, subdivision:Subdivision:Washington, population:Population:5000">Washington, United States < 5000</a></li>
-                    </ul>
-                </div>
-            </div-->
-
                 {{-- Export button --}}
                 <div class="clearfix">
                     {{-- <div class="col-md-2">
@@ -186,53 +231,44 @@
                             </ul>
                         </div>
                     </div> --}}
-                    <form>
+                    <form id="date-filter-form">
                         {{-- Date picker : Start date --}}
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <div class="input-group datePicker" data-grid="standard" data-range-filter>
-                                    <input type="text" data-format="DD MMM, YYYY" disabled class="form-control"
-                                           data-range-start data-range-filter="created_at" data-label="Fecha"
-                                           placeholder="Fecha desde">
+                                    <input type="text" class="form-control" id="daterange-filter"
+                                           name="drf" value="{{ Request::get('drf') }}" autocomplete="off">
                                     <span class="input-group-addon" style="cursor: pointer;"><i
                                                 class="fa fa-calendar"></i></span>
                                 </div>
                             </div>
                         </div>
-
-                        {{-- Date picker : End date --}}
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <div class="input-group datePicker" data-grid="standard" data-range-filter>
-                                    <input type="text" data-format="DD MMM, YYYY" disabled class="form-control"
-                                           data-range-end data-range-filter="created_at" data-label="Fecha"
-                                           placeholder="Fecha hasta">
-                                    <span class="input-group-addon" style="cursor: pointer;"><i
-                                                class="fa fa-calendar"></i></span>
+                    </form>
+                    <form id="filters-form">
+                        <input type="hidden" name="drf" value="{{ Request::get('drf') }}">
+                        <div class="col-md-9">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <select name="addFilterColumn" class="form-control" id="field-filter-selector">
+                                        <option value="">-- Seleccione campo --</option>
+                                        @foreach($filtrables as $field)
+                                            <option value="{{ $field->key }}">{{ $field->name }}</option>
+                                        @endforeach
+                                        <option value="form_name">Formulario</option>
+                                        <option value="area_name">Area</option>
+                                        <option value="company_name">Empresa</option>
+                                        <option value="utm_source">UTM Source</option>
+                                        <option value="utm_medium">UTM Medium</option>
+                                        <option value="utm_campaign">UTM Campaign</option>
+                                        <option value="utm_term">UTM Term</option>
+                                        <option value="utm_content">UTM Content</option>
+                                    </select>
                                 </div>
+                                <div class="form-group">
+                                    <input type="text" name="addFilterValue" placeholder="Buscar" class="form-control" id="field-filter-text">
+                                </div>
+                                <button type="submit" class="btn btn-default">Buscar</button>
                             </div>
-                        </div>
-                        <div class="col-md-6 form-inline">
-                            <div class="form-group">
-                                <select name="addFilterColumn" class="form-control">
-                                    <option value="">-- Seleccione campo --</option>
-                                    @foreach($filtrables as $field)
-                                        <option value="{{ $field->key }}">{{ $field->name }}</option>
-                                    @endforeach
-                                    <option value="form_name">Formulario</option>
-                                    <option value="area_name">Area</option>
-                                    <option value="company_name">Empresa</option>
-                                    <option value="utm_source">UTM Source</option>
-                                    <option value="utm_medium">UTM Medium</option>
-                                    <option value="utm_campaign">UTM Campaign</option>
-                                    <option value="utm_term">UTM Term</option>
-                                    <option value="utm_content">UTM Content</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="addFilterValue" placeholder="Buscar" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-default">Buscar</button>
                         </div>
                     </form>
                 </div>
@@ -265,6 +301,7 @@
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title">Lista</h3>
+                    <span class="pull-right"><strong>Total:</strong> {{ $leads->count() }} leads</span>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover table-leads"

@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Session;
 use Zephia\ZLeader\Model\Lead;
 use Zephia\ZLeader\Model\Field;
 use DB;
- 
+use Carbon\Carbon;
+
 class LeadController extends Controller
 {
     public function index()
@@ -21,11 +22,20 @@ class LeadController extends Controller
         $columnables = Field::columnables()->get();
         $filtrables = Field::filtrables()->get();
 
-        $leadQuery = Lead::with([
-                'form.area.company',
-                'values'
-            ])
+        $leadsQuery = Lead::with([
+            'form.area.company',
+            'values'
+        ])
             ->orderBy('id', 'desc');
+
+        if (!empty(Input::get('drf'))) {
+            $dates = explode('-', Input::get('drf'));
+            $dateFrom = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+            $dateTo = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+
+            $leadsQuery->whereDate('created_at', '>=', $dateFrom);
+            $leadsQuery->whereDate('created_at', '<=', $dateTo);
+        }
 
         $fixedColumns = [
             'form_name' => 'Formulario',
@@ -58,7 +68,7 @@ class LeadController extends Controller
         }
 
         Session::put('zlLeadFilters', $currentFilters);
-        
+
         //dd(Session::all());
 
         if (!empty($currentFilters)) {
@@ -66,19 +76,19 @@ class LeadController extends Controller
                 if (array_key_exists($appliedFilterKey, $fixedColumns)) {
                     switch ($appliedFilterKey) {
                         case 'form_name';
-                            $leadQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                            $leadsQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                 $query->where('name', 'like', '%' . $appliedFilter['value'] . '%');
                             });
                             break;
                         case 'area_name';
-                            $leadQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                            $leadsQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                 $query->whereHas('area', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                     $query->where('name', 'like', '%' . $appliedFilter['value'] . '%');
                                 });
                             });
                             break;
                         case 'company_name';
-                            $leadQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                            $leadsQuery->whereHas('form', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                 $query->whereHas('area', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                     $query->whereHas('company', function ($query) use ($appliedFilterKey, $appliedFilter) {
                                         $query->where('name', 'like', '%' . $appliedFilter['value'] . '%');
@@ -87,10 +97,10 @@ class LeadController extends Controller
                             });
                             break;
                         default:
-                            $leadQuery->where($appliedFilterKey, 'like', '%' . $appliedFilter['value'] . '%');
+                            $leadsQuery->where($appliedFilterKey, 'like', '%' . $appliedFilter['value'] . '%');
                     }
                 } else {
-                    $leadQuery->whereHas('values', function ($query) use ($appliedFilterKey, $appliedFilter) {
+                    $leadsQuery->whereHas('values', function ($query) use ($appliedFilterKey, $appliedFilter) {
                         $query->where('key', $appliedFilterKey)
                             ->where('value', 'like', '%' . $appliedFilter['value'] . '%');
                     });
@@ -98,7 +108,7 @@ class LeadController extends Controller
             }
         }
 
-        $leads = $leadQuery->paginate(50);
+        $leads = $leadsQuery->paginate(50);
 
         return view('ZLeader::lead.index', [
             'leads' => $leads,
@@ -118,9 +128,9 @@ class LeadController extends Controller
         $response_data['company_name'] = $lead->form->area->company->name;
 
         unset(
-            $response_data['updated_at'], 
+            $response_data['updated_at'],
             $response_data['notify'],
-            $response_data['fb_leadgen_id'], 
+            $response_data['fb_leadgen_id'],
             $response_data['user_agent'],
             $response_data['form']
         );
@@ -133,9 +143,9 @@ class LeadController extends Controller
         DB::enableQueryLog();
 
         $leads = Lead::with([
-                'form.area.company',
-                'values'
-            ])
+            'form.area.company',
+            'values'
+        ])
             ->orderBy('id', 'desc')
             ->get();
 
@@ -174,11 +184,11 @@ class LeadController extends Controller
             foreach ($lead->values as $lead_value) {
                 $row[$lead_value->key] = $lead_value->value;
 
-                if(!in_array($lead_value->key, $keys)) {
+                if (!in_array($lead_value->key, $keys)) {
                     $keys[] = $lead_value->key;
                 }
             }
-            
+
             $data[] = $row;
         }
 
@@ -195,15 +205,15 @@ class LeadController extends Controller
     {
         $lead = Lead::findOrFail($lead_id);
 
-        if(!empty(Input::get('form_id'))){
+        if (!empty(Input::get('form_id'))) {
             $lead->form_id = (int)Input::get('form_id');
         }
 
-        if(!empty(Input::get('notify'))) {
+        if (!empty(Input::get('notify'))) {
             $lead->notify = (int)Input::get('notify');
         }
 
-        if(!empty(Input::get('notes'))) {
+        if (!empty(Input::get('notes'))) {
             $lead->notes = Input::get('notes');
         }
 
