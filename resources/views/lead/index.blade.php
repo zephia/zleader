@@ -301,7 +301,7 @@
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title">Lista</h3>
-                    <span class="pull-right"><strong>Total:</strong> {{ $leads->count() }} leads</span>
+                    <span class="pull-right"><strong>Total:</strong> {{ $leads->total() }} leads</span>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered table-hover table-leads"
