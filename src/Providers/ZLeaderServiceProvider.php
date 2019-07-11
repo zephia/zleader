@@ -48,7 +48,7 @@ class ZLeaderServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             $schedule = $this->app->make(Schedule::class);
-            $schedule->command('autocity:release-queue')->everyMinute();
+            $schedule->command('zleader:release-queue')->everyMinute();
         });
 
         $bindings = app()->getBindings();
