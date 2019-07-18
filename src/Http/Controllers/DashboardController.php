@@ -86,16 +86,16 @@ class DashboardController extends Controller
 
             $months_db = DB::table('zleader_leads')
                 ->select(
-                    'zleader_leads.created_at',
-                    DB::raw('MONTH(zleader_leads.created_at) as month'),
-                    DB::raw('YEAR(zleader_leads.created_at) as year')
+                    'zleader_leads.updated_at',
+                    DB::raw('MONTH(zleader_leads.updated_at) as month'),
+                    DB::raw('YEAR(zleader_leads.updated_at) as year')
                 )
                 ->groupBy('year','month');
 
             if (isset($date_from) && isset($date_to)) {
                 $months_db
-                    ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                    ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                    ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                    ->whereDate('zleader_leads.updated_at', '<=', $date_to);
             }
 
             $months = $months_db->get();
@@ -109,15 +109,15 @@ class DashboardController extends Controller
                             DB::raw('COUNT(*) as total')
                         )
                         ->where('zleader_forms.area_id','=',$area->id)
-                        ->where(DB::raw("MONTH(zleader_leads.created_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
-                        ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"));
+                        ->where(DB::raw("MONTH(zleader_leads.updated_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
+                        ->where(DB::raw("YEAR(zleader_leads.updated_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"));
                     if (isset($date_from) && isset($date_to)) {
                         $months_db
-                            ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                            ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                            ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                            ->whereDate('zleader_leads.updated_at', '<=', $date_to);
                     }
                     $months_data = $months_db->first();
-                    $formated_month = Carbon::parse($month->created_at)->formatLocalized('%B');
+                    $formated_month = Carbon::parse($month->updated_at)->formatLocalized('%B');
                     $months_formated[] = [
                         'month' => $formated_month,
                         'total' => $months_data->total,
@@ -151,8 +151,8 @@ class DashboardController extends Controller
                 ->where('zleader_areas.company_id', '=', $company->id);
             if (isset($date_from) && isset($date_to)) {
                 $count_data
-                    ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                    ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                    ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                    ->whereDate('zleader_leads.updated_at', '<=', $date_to);
             }
             $count_result = $count_data->get();
             $company_item['count'] = count($count_result) > 0 ? $count_result[0]->lead_count : 0;
@@ -168,8 +168,8 @@ class DashboardController extends Controller
                     ->where('zleader_forms.area_id', '=', $area->id);
                 if (isset($date_from) && isset($date_to)) {
                     $count_data_area
-                        ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                        ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                        ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                        ->whereDate('zleader_leads.updated_at', '<=', $date_to);
                 }
                 $count_result_area = $count_data_area->get();
                 $areas_item['count'] = count($count_result_area) > 0 ? $count_result_area[0]->lead_count : 0;
@@ -209,8 +209,8 @@ class DashboardController extends Controller
 
         if (isset($date_from) && isset($date_to)) {
             $leads_data
-                ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                ->whereDate('zleader_leads.updated_at', '<=', $date_to);
         }
 
         $leads_medium = $leads_data->get();
@@ -227,8 +227,8 @@ class DashboardController extends Controller
 
         if (isset($date_from) && isset($date_to)) {
             $leads_data
-                ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                ->whereDate('zleader_leads.updated_at', '<=', $date_to);
         }
 
         if (isset($company_id)) {
@@ -252,16 +252,16 @@ class DashboardController extends Controller
 
         $months_db = DB::table('zleader_leads')
             ->select(
-                'zleader_leads.created_at',
-                DB::raw('MONTH(zleader_leads.created_at) as month'),
-                DB::raw('YEAR(zleader_leads.created_at) as year')
+                'zleader_leads.updated_at',
+                DB::raw('MONTH(zleader_leads.updated_at) as month'),
+                DB::raw('YEAR(zleader_leads.updated_at) as year')
             )
             ->groupBy('year','month');
 
         if (isset($date_from) && isset($date_to)) {
             $months_db
-                ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                ->whereDate('zleader_leads.updated_at', '<=', $date_to);
         }
 
         $months = $months_db->get();
@@ -279,17 +279,17 @@ class DashboardController extends Controller
                         DB::raw('COUNT(*) as total')
                     )
                     ->where('zleader_areas.company_id','=',$company->id)
-                    ->where(DB::raw("MONTH(zleader_leads.created_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
-                    ->where(DB::raw("YEAR(zleader_leads.created_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"));
+                    ->where(DB::raw("MONTH(zleader_leads.updated_at)"), "=", DB::raw("MONTH(STR_TO_DATE('" . $month->month . "', '%m'))"))
+                    ->where(DB::raw("YEAR(zleader_leads.updated_at)"), "=", DB::raw("YEAR(STR_TO_DATE('" . $month->year . "', '%Y'))"));
 
                 if (isset($date_from) && isset($date_to)) {
                     $months_db
-                        ->whereDate('zleader_leads.created_at', '>=', $date_from)
-                        ->whereDate('zleader_leads.created_at', '<=', $date_to);
+                        ->whereDate('zleader_leads.updated_at', '>=', $date_from)
+                        ->whereDate('zleader_leads.updated_at', '<=', $date_to);
                 }
 
                 $months_data = $months_db->first();
-                $formated_month = Carbon::parse($month->created_at)->formatLocalized('%B');
+                $formated_month = Carbon::parse($month->updated_at)->formatLocalized('%B');
                 $months_formated[] = [
                     'month' => $formated_month,
                     'total' => $months_data->total,
